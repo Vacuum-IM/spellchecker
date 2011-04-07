@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 2.8)
 project(spell-plugin)
 set(PLUGIN_NAME "spellplugin")
 
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+
 add_custom_target(updatets)
 
 include("translations.cmake")
@@ -44,7 +46,7 @@ if (WIN32)
 elseif (UNIX)
 	include_directories(
 	  "${CMAKE_INSTALL_PREFIX}/include/vacuum"
-	  "${ASPELL_INCLUDE_DIR}"
+#	  "${ASPELL_INCLUDE_DIR}"
 	  )
 endif (WIN32)
 
