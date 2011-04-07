@@ -1,0 +1,15 @@
+Notice
+======
+To build external plugin you should specify CMAKE_INSTALL_PREFIX where vacuum installed.
+cmake -DCMAKE_INSTALL_PREFIX=/usr
+make
+make install
+
+
+
+Windows example
+===============
+NOW BROKEN
+qmake -r VACUUM_SRC_PATH="../vacuum-src/src" VACUUM_LIB_PATH="../vacuum-build/src/libs"
+nmake release
+nmake install
