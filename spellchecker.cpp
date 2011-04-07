@@ -28,26 +28,26 @@
 
 #include <QCoreApplication>
 
-//#if defined(Q_WS_MAC)
-//#include "macspellchecker.h"
-//#elif defined(HAVE_ENCHANT)
-//#include "enchantchecker.h"
-//#elif defined(HAVE_ASPELL)
+#if defined(Q_WS_MAC)
+#include "macspellchecker.h"
+#elif defined(HAVE_ENCHANT)
+#include "enchantchecker.h"
+#elif defined(HAVE_ASPELL)
 #include "aspellchecker.h"
-//#endif
+#endif
 
 SpellChecker* SpellChecker::instance() 
 {
 	if (!instance_) {
-	  //#ifdef Q_WS_MAC
-	  //		instance_ = new MacSpellChecker();
-		//#elif defined(HAVE_ENCHANT)
-	  //	instance_ = new EnchantChecker();
-		//#elif defined(HAVE_ASPELL)
+          #ifdef Q_WS_MAC
+                        instance_ = new MacSpellChecker();
+                #elif defined(HAVE_ENCHANT)
+                instance_ = new EnchantChecker();
+                #elif defined(HAVE_ASPELL)
 		instance_ = new ASpellChecker();
-		//#else
-		  //	instance_ = new SpellChecker();
-		//#endif
+                #else
+                        instance_ = new SpellChecker();
+                #endif
 	}
 	return instance_;
 }

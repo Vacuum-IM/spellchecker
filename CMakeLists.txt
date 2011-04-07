@@ -9,7 +9,10 @@ include("translations.cmake")
 include("install.cmake")
 
 find_package(Qt4 REQUIRED)
-find_package(ASPELL REQUIRED)
+find_package(ENCHANT)
+if (NOT ENCHANT_FOUND)
+	find_package(ASPELL)
+endif (NOT ENCHANT_FOUND)
 
 set(LANGS "" CACHE STRING "List of languages to build localization for (this variable overrides any of LANG_*)")
 set(USED_LANGS "" CACHE INTERNAL "List of languages actually used for generating targets")
@@ -50,21 +53,34 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 set(SOURCES 
   spellplugin.cpp
   spellchecker.cpp
-  aspellchecker.cpp
+#  aspellchecker.cpp
   spellhighlighter.cpp
   )
 set(HEADERS
   spellplugin.h
   spellchecker.h
-  aspellchecker.h
+#  aspellchecker.h
   spellhighlighter.h
 )
 set(MOC_HEADERS 
   spellplugin.h
   spellchecker.h
-  aspellchecker.h
+#  aspellchecker.h
   spellhighlighter.h
 )
+
+if (ENCHANT_FOUND)
+	set(SOURCES ${SOURCES} enchantchecker.cpp)
+	set(HEADERS ${HEADERS} enchantchecker.h)
+	include_directories("${ENCHANT_INCLUDE_DIR}")
+	add_definitions(-DHAVE_ENCHANT)
+elseif (ASPELL_FOUND)
+	set(SOURCES ${SOURCES} aspellchecker.cpp)
+	set(HEADERS ${HEADERS} aspellchecker.h)
+	include_directories("${ASPELL_INCLUDE_DIR}")
+	add_definitions(-DHAVE_ASPELL)
+endif (ENCHANT_FOUND)
+
 #set(UIS notifygmaildialog.ui )
 
 qt4_wrap_cpp(MOC_SOURCES ${MOC_HEADERS})
@@ -76,12 +92,13 @@ add_translations(TRANSLATIONS ${PLUGIN_NAME} ${HEADERS} ${SOURCES})
 add_library(${PLUGIN_NAME} SHARED ${SOURCES} ${MOC_SOURCES} ${RCC_SOURCES} ${UI_HEADERS} ${TRANSLATIONS} )
 
 find_library(TARGET_UTILS vacuumutils ${CMAKE_INSTALL_PREFIX})
-target_link_libraries(
-  ${PLUGIN_NAME} 
-  ${TARGET_UTILS} 
-  ${QT_LIBRARIES}
-  ${ASPELL_LIBRARIES}
-)
+
+if (ENCHANT_FOUND)
+	target_link_libraries(${PLUGIN_NAME} ${TARGET_UTILS} ${QT_LIBRARIES} ${ENCHANT_LIBRARIES})
+elseif (ASPELL_FOUND)
+	target_link_libraries(${PLUGIN_NAME} ${TARGET_UTILS} ${QT_LIBRARIES} ${ASPELL_LIBRARIES})
+endif (ENCHANT_FOUND)
+
 if (WIN32)
 	install(TARGETS ${PLUGIN_NAME}
 		RUNTIME DESTINATION "${INSTALL_PLUGINS}"

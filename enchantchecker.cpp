@@ -35,9 +35,12 @@ EnchantChecker::EnchantChecker() : speller_(NULL)
 {
 	if (enchant::Broker *instance = enchant::Broker::instance())
 	{
+                QLocale loc;
 		std::string lang("en_US");
-        	if (instance->dict_exists(QTextCodec::locale()))
-			lang = QTextCodec::locale();
+//        	if (instance->dict_exists(QTextCodec::locale()))
+                if (instance->dict_exists(loc.name().toStdString()))
+//			lang = QTextCodec::locale();
+                        lang = loc.name().toStdString();
 		try {
 			speller_ = enchant::Broker::instance()->request_dict(lang);
 		} catch (enchant::Exception &e) {
