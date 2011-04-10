@@ -5,6 +5,10 @@ cmake -DCMAKE_INSTALL_PREFIX=/usr
 make
 make install
 
+You can change spellchecker-backend to aspell(enchant is default), by:
+cmake -DSPELLCHECKER_BACKEND=ASPELL
+
+
 
 
 Windows example
