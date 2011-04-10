@@ -1,5 +1,5 @@
 #Plugin file name
-TARGET              = spellplugin
+TARGET              = spellchecker
 include(config.inc)
 
 #Project Configuration
@@ -17,4 +17,4 @@ include(install.inc)
 #Translation
 include(translations.inc)
 
-include(spellplugin.pri)
+include(spellchecker.pri)

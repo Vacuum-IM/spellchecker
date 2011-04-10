@@ -4,24 +4,12 @@
 <context>
     <name>SpellPlugin</name>
     <message>
-        <source>Spell-checker Plugin</source>
-        <translation type="Плагин проверки правописания"></translation>
+        <source>Плагин проверки орфографии</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Hilights words that may not be spelled correctly</source>
-        <translation type="Подсвечивает слова в написании которых возможно допущена ошибка"></translation>
-    </message>
-    <message>
-        <source>Spell Plugin Message</source>
-        <translation type="Сообщение Плагина проверки правописания"></translation>
-    </message>
-    <message>
-        <source>Spell Plugin</source>
-        <translation type="Плагин проверки орфографии"></translation>
-    </message>
-    <message>
-        <source>Now it is just a test of building any working plugin..</source>
-        <translation type="Тест-попытка сборки Своего плагина"></translation>
+        <source>Подсвечивает слова которые могли быть набраны неправильно</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
