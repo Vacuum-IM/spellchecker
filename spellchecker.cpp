@@ -19,7 +19,7 @@ void SpellPlugin::pluginInfo(IPluginInfo *APluginInfo)
 {
   APluginInfo->name = tr("Spell Checker");
   APluginInfo->description = tr("Highlights words that may not be spelled correctly");
-  APluginInfo->version = "0.0.1";
+  APluginInfo->version = "0.0.2";
   APluginInfo->author = "Minnahmetov V.K.";
   APluginInfo->homePage = "http://code.google.com/p/vacuum-plugins/";
   APluginInfo->dependences.append(MESSAGEWIDGETS_UUID);
