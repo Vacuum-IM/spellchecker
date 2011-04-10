@@ -5,7 +5,7 @@
     <name>SpellPlugin</name>
     <message>
         <source>Highlights words that may not be spelled correctly</source>
-        <translation>Подсвечивает слова возможно набранные неправильно</translation>
+        <translation>Подсвечивает слова, возможно, набранные неправильно</translation>
     </message>
     <message>
         <source>Spell Checker</source>
