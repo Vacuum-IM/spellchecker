@@ -12,7 +12,7 @@
 #include "spellhighlighter.h"
 #include "spellbackend.h"
 
-#define SPELLPLUGIN_UUID "{0dc5fbd9-2dd4-4720-9c95-8c3393a577a5}"
+#define SPELLCHECKER_UUID "{0dc5fbd9-2dd4-4720-9c95-8c3393a577a5}"
 
 struct SHPair {
   QObject* attachedTo;
@@ -29,7 +29,7 @@ public:
   SpellPlugin();
   ~SpellPlugin();
   virtual QObject *instance() { return this; }
-  virtual QUuid pluginUuid() const { return SPELLPLUGIN_UUID; }
+  virtual QUuid pluginUuid() const { return SPELLCHECKER_UUID; }
   virtual void pluginInfo(IPluginInfo *APluginInfo);
   virtual bool initConnections(IPluginManager *APluginManager, int &AInitOrder);
   virtual bool initObjects();
