@@ -1,5 +1,5 @@
 USE_ENCHANT {
-  DIFINES       += HAVE_ENCHANT
+  DEFINES       += HAVE_ENCHANT
   # To be fixed
   #win32 {
   #  INCLUDEPATH += $${ENCHANT_DEV_PATH}/include
