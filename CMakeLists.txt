@@ -10,11 +10,12 @@ add_custom_target(updatets)
 include("translations.cmake")
 include("install.cmake")
 
+if (NOT DEFINED SPELLCHECKER_BACKEND)
+  set(SPELLCHECKER_BACKEND "ENCHANT")
+endif (NOT DEFINED SPELLCHECKER_BACKEND)
+
 find_package(Qt4 REQUIRED)
-find_package(ENCHANT)
-if (NOT ENCHANT_FOUND)
-	find_package(ASPELL)
-endif (NOT ENCHANT_FOUND)
+find_package(${SPELLCHECKER_BACKEND} REQUIRED)
 
 set(LANGS "" CACHE STRING "List of languages to build localization for (this variable overrides any of LANG_*)")
 set(USED_LANGS "" CACHE INTERNAL "List of languages actually used for generating targets")
