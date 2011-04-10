@@ -29,61 +29,65 @@
 #include <QCoreApplication>
 
 #if defined(Q_WS_MAC)
-#include "macspellchecker.h"
+#	include "macspellchecker.h"
 #elif defined(HAVE_ENCHANT)
-#include "enchantchecker.h"
+#	include "enchantchecker.h"
 #elif defined(HAVE_ASPELL)
-#include "aspellchecker.h"
+#	include "aspellchecker.h"
 #endif
 
-SpellChecker* SpellChecker::instance() 
+SpellBackend* SpellBackend::FInstance = NULL;
+
+SpellBackend* SpellBackend::instance() 
 {
-	if (!instance_) {
-          #ifdef Q_WS_MAC
-                        instance_ = new MacSpellChecker();
-                #elif defined(HAVE_ENCHANT)
-                instance_ = new EnchantChecker();
-                #elif defined(HAVE_ASPELL)
-		instance_ = new ASpellChecker();
-                #else
-                        instance_ = new SpellChecker();
-                #endif
+	if (!FInstance) 
+	{
+#ifdef Q_WS_MAC
+		FInstance = new MacSpellChecker();
+#elif defined(HAVE_ENCHANT)
+		FInstance = new EnchantChecker();
+#elif defined(HAVE_ASPELL)
+		FInstance = new ASpellChecker();
+#else
+		FInstance = new SpellBackend();
+#endif
 	}
-	return instance_;
+	return FInstance;
 }
 
-SpellChecker::SpellChecker()
-	: QObject(QCoreApplication::instance())
+SpellBackend::SpellBackend() : QObject(QCoreApplication::instance())
+{
+
+}
+
+SpellBackend::~SpellBackend()
 {
 }
 
-SpellChecker::~SpellChecker()
-{
-}
-
-bool SpellChecker::available() const
+bool SpellBackend::available() const
 {
 	return false;
 }
 
-bool SpellChecker::writable() const
+bool SpellBackend::writable() const
 {
+	return false;
+}
+
+bool SpellBackend::isCorrect(const QString &AWord)
+{
+	Q_UNUSED(AWord);
 	return true;
 }
 
-bool SpellChecker::isCorrect(const QString&)
+QList<QString> SpellBackend::suggestions(const QString &AWord)
 {
-	return true;
-}
-
-QList<QString> SpellChecker::suggestions(const QString&)
-{
+	Q_UNUSED(AWord);
 	return QList<QString>();
 }
 
-bool SpellChecker::add(const QString&)
+bool SpellBackend::add(const QString &AWord)
 {
+	Q_UNUSED(AWord);
 	return false;
 }
-
-SpellChecker* SpellChecker::instance_ = NULL;

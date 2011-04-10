@@ -26,6 +26,7 @@
  */
 
 #include <QDir>
+#include <QLocale>
 #include <QCoreApplication>
 #include <QtDebug>
 
@@ -34,69 +35,80 @@
 
 ASpellChecker::ASpellChecker()
 {
-	config_ = NULL;
-	speller_ = NULL;
-	config_ = new_aspell_config();
-	aspell_config_replace(config_, "encoding", "utf-8");
+	FConfig = NULL;
+	FSpeller = NULL;
+	FConfig = new_aspell_config();
+	aspell_config_replace(FConfig, "encoding", "utf-8");
 #ifdef Q_WS_WIN
-	aspell_config_replace(config_, "conf-dir", QDir::homeDirPath());
-	aspell_config_replace(config_, "data-dir", QString("%1/aspell/data").arg(QCoreApplication::applicationDirPath()));
-	aspell_config_replace(config_, "dict-dir", QString("%1/aspell/dict").arg(QCoreApplication::applicationDirPath()));
+	aspell_config_replace(FConfig, "lang", QLocale().name().toUtf8().constData());
+	aspell_config_replace(FConfig, "conf-dir", QString("%1/aspell").arg(QCoreApplication::applicationDirPath()).toUtf8().constData());
+	aspell_config_replace(FConfig, "data-dir", QString("%1/aspell/data").arg(QCoreApplication::applicationDirPath()).toUtf8().constData());
+	aspell_config_replace(FConfig, "dict-dir", QString("%1/aspell/dict").arg(QCoreApplication::applicationDirPath()).toUtf8().constData());
 #endif
-	AspellCanHaveError* ret = new_aspell_speller(config_);
-	if (aspell_error_number(ret) == 0) {
-		speller_ = to_aspell_speller(ret);
+
+	AspellCanHaveError* ret = new_aspell_speller(FConfig);
+	if (aspell_error_number(ret) == 0) 
+	{
+		FSpeller = to_aspell_speller(ret);
 	}
-	else {
+	else 
+	{
 		qWarning() << QString("Aspell error: %1").arg(aspell_error_message(ret));
 	}
 }
 
 ASpellChecker::~ASpellChecker()
 {
-	if(config_) {
-		delete_aspell_config(config_);
-		config_ = NULL;
+	if(FConfig) 
+	{
+		delete_aspell_config(FConfig);
+		FConfig = NULL;
 	}
 
-	if(speller_) {
-		delete_aspell_speller(speller_);
-		speller_ = NULL;
+	if(FSpeller) 
+	{
+		delete_aspell_speller(FSpeller);
+		FSpeller = NULL;
 	}
 }
 
-bool ASpellChecker::isCorrect(const QString& word)
+bool ASpellChecker::isCorrect(const QString &AWord)
 {
-	if(speller_) {
-		int correct = aspell_speller_check(speller_, word.toUtf8().constData(), -1);
+	if(FSpeller) 
+	{
+		int correct = aspell_speller_check(FSpeller,AWord.toUtf8().constData(), -1);
 		return (correct != 0);
 	}
 	return true;
 }
 
-QList<QString> ASpellChecker::suggestions(const QString& word)
+QList<QString> ASpellChecker::suggestions(const QString &AWord)
 {
 	QList<QString> words;
-	if (speller_) {
-		const AspellWordList* list = aspell_speller_suggest(speller_, word.toUtf8(), -1); 
+	if (FSpeller) 
+	{
+		const AspellWordList* list = aspell_speller_suggest(FSpeller, AWord.toUtf8().constData(), -1); 
 		AspellStringEnumeration* elements = aspell_word_list_elements(list);
+	
 		const char *c_word;
-		while ((c_word = aspell_string_enumeration_next(elements)) != NULL) {
+		while ((c_word = aspell_string_enumeration_next(elements)) != NULL) 
 			words += QString::fromUtf8(c_word);
-		}
+
 		delete_aspell_string_enumeration(elements);
 	}
 	return words;
 }
 
-bool ASpellChecker::add(const QString& word)
+bool ASpellChecker::add(const QString &AWord)
 {
 	bool result = false;
-	if (config_ && speller_) {
-		QString trimmed_word = word.trimmed();
-		if(!word.isEmpty()) {
-			aspell_speller_add_to_personal(speller_, trimmed_word.toUtf8(), trimmed_word.toUtf8().length());
-			aspell_speller_save_all_word_lists(speller_);
+	if (FConfig && FSpeller) 
+	{
+		QString trimmed_word = AWord.trimmed();
+		if(!trimmed_word.isEmpty()) 
+		{
+			aspell_speller_add_to_personal(FSpeller, trimmed_word.toUtf8(), trimmed_word.toUtf8().length());
+			aspell_speller_save_all_word_lists(FSpeller);
 			result = true;
 		}
 	}
@@ -105,7 +117,7 @@ bool ASpellChecker::add(const QString& word)
 
 bool ASpellChecker::available() const
 {
-	return (speller_ != NULL);
+	return (FSpeller != NULL);
 }
 
 bool ASpellChecker::writable() const

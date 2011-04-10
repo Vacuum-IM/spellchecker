@@ -1,6 +1,7 @@
-HEADERS = spellchecker.h
-SOURCES = spellchecker.cpp
+HEADERS += spellchecker.h \
+           spellbackend.h \
+           spellhighlighter.h
 
-HEADERS += spellbackend.h spellhighlighter.h aspellchecker.h
-SOURCES += spellbackend.cpp spellhighlighter.cpp aspellchecker.cpp
-
+SOURCES += spellchecker.cpp \
+           spellbackend.cpp \
+           spellhighlighter.cpp

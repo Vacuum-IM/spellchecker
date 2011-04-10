@@ -31,18 +31,16 @@
 #include "enchant++.h"
 #include "enchantchecker.h"
 
-EnchantChecker::EnchantChecker() : speller_(NULL)
+EnchantChecker::EnchantChecker() : FSpeller(NULL)
 {
 	if (enchant::Broker *instance = enchant::Broker::instance())
 	{
-                QLocale loc;
+		QLocale loc;
 		std::string lang("en_US");
-//        	if (instance->dict_exists(QTextCodec::locale()))
-                if (instance->dict_exists(loc.name().toStdString()))
-//			lang = QTextCodec::locale();
-                        lang = loc.name().toStdString();
+		if (instance->dict_exists(loc.name().toStdString()))
+			lang = loc.name().toStdString();
 		try {
-			speller_ = enchant::Broker::instance()->request_dict(lang);
+			FSpeller = enchant::Broker::instance()->request_dict(lang);
 		} catch (enchant::Exception &e) {
 			qWarning() << QString("Enchant error: %1").arg(e.what());
 		}
@@ -51,39 +49,42 @@ EnchantChecker::EnchantChecker() : speller_(NULL)
 
 EnchantChecker::~EnchantChecker()
 {
-	delete speller_;
-	speller_ = NULL;
+	delete FSpeller;
+	FSpeller = NULL;
 }
 
-bool EnchantChecker::isCorrect(const QString& word)
+bool EnchantChecker::isCorrect(const QString &AWord)
 {
-	if(speller_) {
-		return speller_->check(word.toUtf8().constData());
+	if(FSpeller) 
+	{
+		return FSpeller->check(AWord.toUtf8().constData());
 	}
 	return true;
 }
 
-QList<QString> EnchantChecker::suggestions(const QString& word)
+QList<QString> EnchantChecker::suggestions(const QString &AWord)
 {
 	QList<QString> words;
-	if (speller_) {
+	if (FSpeller) 
+	{
 		std::vector<std::string> out_suggestions;
-		speller_->suggest(word.toUtf8().constData(), out_suggestions);
+		FSpeller->suggest(AWord.toUtf8().constData(), out_suggestions);
 		std::vector<std::string>::iterator aE = out_suggestions.end();
-		for (std::vector<std::string>::iterator aI = out_suggestions.begin(); aI != aE; ++aI) {
+		for (std::vector<std::string>::iterator aI = out_suggestions.begin(); aI != aE; ++aI)
 			words += QString::fromUtf8(aI->c_str());
-		}
 	}
 	return words;
 }
 
-bool EnchantChecker::add(const QString& word)
+bool EnchantChecker::add(const QString &AWord)
 {
 	bool result = false;
-	if (speller_) {
-		QString trimmed_word = word.trimmed();
-		if(!word.isEmpty()) {
-			speller_->add_to_pwl(word.toUtf8().constData());
+	if (FSpeller) 
+	{
+		QString trimmed_word = AWord.trimmed();
+		if(!trimmed_word.isEmpty()) 
+		{
+			FSpeller->add_to_pwl(trimmed_word.toUtf8().constData());
 			result = true;
 		}
 	}
@@ -92,7 +93,7 @@ bool EnchantChecker::add(const QString& word)
 
 bool EnchantChecker::available() const
 {
-	return (speller_ != NULL);
+	return (FSpeller != NULL);
 }
 
 bool EnchantChecker::writable() const
