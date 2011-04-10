@@ -4,12 +4,12 @@
 <context>
     <name>SpellPlugin</name>
     <message>
-        <source>Плагин проверки орфографии</source>
-        <translation type="unfinished"></translation>
+        <source>Highlights words that may not be spelled correctly</source>
+        <translation>Подсвечивает слова возможно набранные неправильно</translation>
     </message>
     <message>
-        <source>Подсвечивает слова которые могли быть набраны неправильно</source>
-        <translation type="unfinished"></translation>
+        <source>Spell Checker</source>
+        <translation>Проверка орфографии</translation>
     </message>
 </context>
 </TS>

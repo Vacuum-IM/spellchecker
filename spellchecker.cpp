@@ -17,7 +17,7 @@ SpellPlugin::~SpellPlugin()
 
 void SpellPlugin::pluginInfo(IPluginInfo *APluginInfo)
 {
-  APluginInfo->name = tr("Spellchecker Plugin");
+  APluginInfo->name = tr("Spell Checker");
   APluginInfo->description = tr("Highlights words that may not be spelled correctly");
   APluginInfo->version = "0.0.1";
   APluginInfo->author = "Minnahmetov V.K.";
