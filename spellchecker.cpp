@@ -114,4 +114,4 @@ void SpellPlugin::addCheckSpelling (IMessageWindow* mWindow)
 }
 
 
-Q_EXPORT_PLUGIN2(plg_spellplugin, SpellPlugin)
+Q_EXPORT_PLUGIN2(plg_spellchecker, SpellChecker)
