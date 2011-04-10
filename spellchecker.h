@@ -1,5 +1,5 @@
-#ifndef SPELLPLUGIN_H
-#define SPELLPLUGIN_H
+#ifndef SPELLCHECKER_H
+#define SPELLCHECKER_H
 
 #include <vector>
 
@@ -14,7 +14,6 @@
 
 #define SPELLPLUGIN_UUID "{0dc5fbd9-2dd4-4720-9c95-8c3393a577a5}"
 
-// (SpellHighlighter + QTextDocument) pair
 struct SHPair {
   QObject* attachedTo;
   SpellHighlighter* spellHighlighter;
@@ -49,4 +48,4 @@ private:
   void appendHL(QObject* mDocument);
 };
 
-#endif // SPELLPLUGIN_H
+#endif // SPELLCHECKER_H
