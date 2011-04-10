@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 
-project(spell-plugin)
-set(PLUGIN_NAME "spellplugin")
+project(vacuum-spellchecker)
+set(PLUGIN_NAME "spellchecker")
 
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
@@ -53,20 +53,20 @@ endif (WIN32)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
 set(SOURCES 
-  spellplugin.cpp
   spellchecker.cpp
+  spellbackend.cpp
 #  aspellchecker.cpp
   spellhighlighter.cpp
   )
 set(HEADERS
-  spellplugin.h
   spellchecker.h
+  spellbackend.h
 #  aspellchecker.h
   spellhighlighter.h
 )
 set(MOC_HEADERS 
-  spellplugin.h
   spellchecker.h
+  spellbackend.h
 #  aspellchecker.h
   spellhighlighter.h
 )
