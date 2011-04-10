@@ -2,7 +2,6 @@
 #include <QMessageBox>
 #include <QApplication>
 #include <QObject>
-#include <iostream>
 
 #include "spellplugin.h"
 
