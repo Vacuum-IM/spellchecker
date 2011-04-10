@@ -3,7 +3,7 @@
 #include <QApplication>
 #include <QObject>
 
-#include "spellplugin.h"
+#include "spellchecker.h"
 
 SpellPlugin::SpellPlugin()
 {

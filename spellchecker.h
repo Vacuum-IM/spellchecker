@@ -10,7 +10,7 @@
 #include <interfaces/imultiuserchat.h>
 
 #include "spellhighlighter.h"
-#include "spellchecker.h"
+#include "spellbackend.h"
 
 #define SPELLPLUGIN_UUID "{0dc5fbd9-2dd4-4720-9c95-8c3393a577a5}"
 
