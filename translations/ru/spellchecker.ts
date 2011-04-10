@@ -5,11 +5,7 @@
     <name>SpellPlugin</name>
     <message>
         <source>Highlights words that may not be spelled correctly</source>
-<<<<<<< local
-        <translation>Подсвечивает слова, в написании которых могла быть допущена ошибка</translation>
-=======
         <translation>Подсвечивает слова, возможно, набранные неправильно</translation>
->>>>>>> other
     </message>
     <message>
         <source>Spell Checker</source>
