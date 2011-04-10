@@ -24,7 +24,7 @@
  *
  */
 
-#include "spellchecker.h"
+#include "spellbackend.h"
 
 #include <QCoreApplication>
 

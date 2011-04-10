@@ -30,7 +30,7 @@
 #include <QList>
 #include <QString>
 
-#include "spellchecker.h"
+#include "spellbackend.h"
 
 struct AspellConfig;
 struct AspellSpeller;
