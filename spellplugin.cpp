@@ -21,7 +21,7 @@ void SpellPlugin::pluginInfo(IPluginInfo *APluginInfo)
   APluginInfo->description = tr("Highlights words that may not be spelled correctly");
   APluginInfo->version = "0.0.1";
   APluginInfo->author = "Minnahmetov V.K.";
-  APluginInfo->homePage = "not yet needed";
+  APluginInfo->homePage = "http://code.google.com/p/vacuum-plugins/";
   APluginInfo->dependences.append(MESSAGEWIDGETS_UUID);
   APluginInfo->dependences.append(MULTIUSERCHAT_UUID);
 }
