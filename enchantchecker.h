@@ -38,7 +38,7 @@ namespace enchant
 }
 
 class EnchantChecker : 
-	public SpellChecker
+	public SpellBackend
 {
 public:
 	EnchantChecker();
