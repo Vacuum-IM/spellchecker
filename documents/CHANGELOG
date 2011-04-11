@@ -5,6 +5,10 @@ LEGEND
   [*] Enhancement
   [-] Bug fix
 
+v0.0.3
+[*] Windows builds now really possible (currently with aspell)
+[*] Rewritten much of code
+
 v0.0.2
 ======
 [*] Russian translation
