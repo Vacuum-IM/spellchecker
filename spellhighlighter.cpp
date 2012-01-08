@@ -25,7 +25,7 @@ void SpellHighlighter::highlightBlock(const QString &AText)
     while (index >= 0)
     {
         int length = expression.matchedLength();
-        if (!expression.cap().contains(number) && !isUserNickName(FMultiUserChat, expression.cap()))
+        if (!expression.cap().contains(number) && !isUserNickName(expression.cap()))
         {
             if (!SpellBackend::instance()->isCorrect(expression.cap()))
             {
@@ -36,7 +36,7 @@ void SpellHighlighter::highlightBlock(const QString &AText)
     }
 }
 
-bool SpellHighlighter::isUserNickName(IMultiUserChat *AMultiUserChat, const QString &AText)
+bool SpellHighlighter::isUserNickName(const QString &AText)
 {
-    return AMultiUserChat != NULL && AMultiUserChat->userByNick(AText) != NULL;
+    return FMultiUserChat != NULL && FMultiUserChat->userByNick(AText) != NULL;
 }
