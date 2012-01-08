@@ -11,44 +11,32 @@ SpellHighlighter::SpellHighlighter(QTextDocument *ADocument, IMultiUserChat *AMu
 
 void SpellHighlighter::highlightBlock(const QString &AText)
 {
-	QTextCharFormat tcf;
-	tcf.setUnderlineColor(Qt::red);
-	tcf.setUnderlineStyle(QTextCharFormat::SpellCheckUnderline);
+    QTextCharFormat tcf;
+    tcf.setUnderlineColor(Qt::red);
+    tcf.setUnderlineStyle(QTextCharFormat::SpellCheckUnderline);
 
-	// Match words (minimally)
-	QRegExp expression("\\b\\w+\\b");
+    // Match words (minimally)
+    QRegExp expression("\\b\\w+\\b");
 
-	QRegExp number("\\b\\d+\\b");
+    QRegExp number("\\b\\d+\\b");
 
-	// Iterate through all words
-	int index = AText.indexOf(expression);
-	while (index >= 0) 
-	{                
-		int length = expression.matchedLength();
-                if (!expression.cap().contains(number) && !isUserNickName(FMultiUserChat, expression.cap()))
-                {
-		        if (!SpellBackend::instance()->isCorrect(expression.cap()))
-                        {
-			        setFormat(index, length, tcf);
-                        }
-                }
-		index = AText.indexOf(expression, index + length);
-	}
+    // Iterate through all words
+    int index = AText.indexOf(expression);
+    while (index >= 0)
+    {
+        int length = expression.matchedLength();
+        if (!expression.cap().contains(number) && !isUserNickName(FMultiUserChat, expression.cap()))
+        {
+            if (!SpellBackend::instance()->isCorrect(expression.cap()))
+            {
+                setFormat(index, length, tcf);
+            }
+        }
+        index = AText.indexOf(expression, index + length);
+    }
 }
 
 bool SpellHighlighter::isUserNickName(IMultiUserChat *AMultiUserChat, const QString &AText)
 {
-        if (AMultiUserChat != NULL)
-        {
-                QList<IMultiUser *> list = AMultiUserChat->allUsers();
-                for (int i = 0; i < list.count(); ++i)
-                {
-                        if (AText == list.at(i)->nickName())
-                        {
-                                return true;
-                        }
-                }
-        }
-
-        return false;
+    return AMultiUserChat != NULL && AMultiUserChat->userByNick(AText) != NULL;
 }

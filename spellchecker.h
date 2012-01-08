@@ -14,36 +14,36 @@
 
 struct SHPair
 {
-	QObject *attachedTo;
-        SpellHighlighter *spellHighlighter;
+    QObject *attachedTo;
+    SpellHighlighter *spellHighlighter;
 };
 
 class SpellChecker : 
-	public QObject,
-	public IPlugin
+        public QObject,
+        public IPlugin
 {
-        Q_OBJECT
-        Q_INTERFACES(IPlugin)
+    Q_OBJECT
+    Q_INTERFACES(IPlugin)
 public:
-	SpellChecker();
-	~SpellChecker();
-	virtual QObject *instance() { return this; }
-	virtual QUuid pluginUuid() const { return SPELLCHECKER_UUID; }
-	virtual void pluginInfo(IPluginInfo *APluginInfo);
-	virtual bool initConnections(IPluginManager *APluginManager, int &AInitOrder);
-	virtual bool initObjects() { return true; }
-	virtual bool initSettings() { return true; }
-	virtual bool startPlugin() { return true; }
+    SpellChecker();
+    ~SpellChecker();
+    virtual QObject *instance() { return this; }
+    virtual QUuid pluginUuid() const { return SPELLCHECKER_UUID; }
+    virtual void pluginInfo(IPluginInfo *APluginInfo);
+    virtual bool initConnections(IPluginManager *APluginManager, int &AInitOrder);
+    virtual bool initObjects() { return true; }
+    virtual bool initSettings() { return true; }
+    virtual bool startPlugin() { return true; }
 protected:
-        void appendHL(QTextDocument *ADocument, IMultiUserChat *AMultiUserChat);
-	SpellHighlighter* getSpellByDocument(QObject *AEditor);
+    void appendHL(QTextDocument *ADocument, IMultiUserChat *AMultiUserChat);
+    SpellHighlighter* getSpellByDocument(QObject *AEditor);
 protected slots:
-	void onEditWidgetCreated(IEditWidget* AWidget);
-	void onSpellDocumentDestroyed(QObject* ADocument);
+    void onEditWidgetCreated(IEditWidget* AWidget);
+    void onSpellDocumentDestroyed(QObject* ADocument);
 private:
-	IMessageWidgets *FMessageWidgets;
+    IMessageWidgets *FMessageWidgets;
 private:
-        QList<SHPair> FHighlighWidgets;
+    QList<SHPair> FHighlighWidgets;
 };
 
 #endif // SPELLCHECKER_H
