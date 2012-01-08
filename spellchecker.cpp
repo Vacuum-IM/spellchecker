@@ -19,7 +19,7 @@ void SpellChecker::pluginInfo(IPluginInfo *APluginInfo)
 {
 	APluginInfo->name = tr("Spell Checker");
 	APluginInfo->description = tr("Highlights words that may not be spelled correctly");
-	APluginInfo->version = "0.0.3";
+        APluginInfo->version = "0.0.4";
 	APluginInfo->author = "Minnahmetov V.K.";
 	APluginInfo->homePage = "http://code.google.com/p/vacuum-plugins/";
 	APluginInfo->dependences.append(MESSAGEWIDGETS_UUID);
@@ -41,20 +41,20 @@ bool SpellChecker::initConnections(IPluginManager *APluginManager, int &AInitOrd
 	return FMessageWidgets!=NULL;
 }
 
-void SpellChecker::appendHL(QTextDocument *ADocument) 
+void SpellChecker::appendHL(QTextDocument *ADocument, IMultiUserChat *AMultiUserChat)
 {
-	SHPair hili;
-	SpellHighlighter *spell = new SpellHighlighter(ADocument);
+        SHPair hili;
+        SpellHighlighter *spell = new SpellHighlighter(ADocument, AMultiUserChat);
 	hili.attachedTo = ADocument;
 	hili.spellHighlighter = spell;
 	FHighlighWidgets.append(hili);
-	connect(ADocument,SIGNAL(destroyed(QObject *)),SLOT(onSpellDocumentDestroyed(QObject *)));	 
+        connect(ADocument,SIGNAL(destroyed(QObject *)),SLOT(onSpellDocumentDestroyed(QObject *)));
 }
 
-SpellHighlighter *SpellChecker::getSpellByDocument(QObject *ADocument) 
+SpellHighlighter *SpellChecker::getSpellByDocument(QObject *ADocument)
 {
 	SpellHighlighter *spell = NULL;
-	for (int i=0; spell==NULL && i<FHighlighWidgets.count(); i++) 
+        for (int i=0; spell==NULL && i<FHighlighWidgets.count(); i++)
 	{
 		if (ADocument == FHighlighWidgets.at(i).attachedTo) 
 		{
@@ -67,7 +67,15 @@ SpellHighlighter *SpellChecker::getSpellByDocument(QObject *ADocument)
 
 void SpellChecker::onEditWidgetCreated(IEditWidget *AWidget)
 {
-	appendHL(AWidget->document());
+        IMultiUserChatWindow *window = NULL;
+        QWidget *parent = AWidget->instance()->parentWidget();
+        while (window == NULL && parent != NULL)
+        {
+            window = qobject_cast<IMultiUserChatWindow *>(parent);
+            parent = parent->parentWidget();
+        }
+
+        appendHL(AWidget->document(), window ? window->multiUserChat() : NULL);
 }
 
 void SpellChecker::onSpellDocumentDestroyed(QObject *ADocument) 

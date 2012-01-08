@@ -5,6 +5,9 @@ LEGEND
   [*] Enhancement
   [-] Bug fix
 
+v0.0.4
+[*] Don't check users nicknames
+
 v0.0.3
 [*] Windows builds now really possible (currently with aspell)
 [*] Rewritten much of code

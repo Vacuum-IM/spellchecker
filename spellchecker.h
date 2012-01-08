@@ -5,24 +5,25 @@
 
 #include <interfaces/ipluginmanager.h>
 #include <interfaces/imessagewidgets.h>
+#include <interfaces/imultiuserchat.h>
 
 #include "spellhighlighter.h"
 #include "spellbackend.h"
 
 #define SPELLCHECKER_UUID "{0dc5fbd9-2dd4-4720-9c95-8c3393a577a5}"
 
-struct SHPair 
+struct SHPair
 {
 	QObject *attachedTo;
-	SpellHighlighter* spellHighlighter;
+        SpellHighlighter *spellHighlighter;
 };
 
 class SpellChecker : 
 	public QObject,
 	public IPlugin
 {
-	Q_OBJECT;
-	Q_INTERFACES(IPlugin);
+        Q_OBJECT
+        Q_INTERFACES(IPlugin)
 public:
 	SpellChecker();
 	~SpellChecker();
@@ -34,7 +35,7 @@ public:
 	virtual bool initSettings() { return true; }
 	virtual bool startPlugin() { return true; }
 protected:
-	void appendHL(QTextDocument *ADocument);
+        void appendHL(QTextDocument *ADocument, IMultiUserChat *AMultiUserChat);
 	SpellHighlighter* getSpellByDocument(QObject *AEditor);
 protected slots:
 	void onEditWidgetCreated(IEditWidget* AWidget);
@@ -42,7 +43,7 @@ protected slots:
 private:
 	IMessageWidgets *FMessageWidgets;
 private:
-	QList<SHPair> FHighlighWidgets;
+        QList<SHPair> FHighlighWidgets;
 };
 
 #endif // SPELLCHECKER_H
