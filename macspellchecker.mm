@@ -25,6 +25,7 @@
  */
 
 #include <Cocoa/Cocoa.h>
+#import <AppKit/Appkit.h>
 
 #include "macspellchecker.h"
 
