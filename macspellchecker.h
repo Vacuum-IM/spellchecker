@@ -33,7 +33,7 @@
 #include "spellchecker.h"
 
 class MacSpellChecker : 
-	public SpellChecker
+	public SpellBackend
 {
 public:
 	MacSpellChecker();
