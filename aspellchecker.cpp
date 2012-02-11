@@ -54,6 +54,7 @@ ASpellChecker::ASpellChecker()
 	else 
 	{
 		qWarning() << QString("Aspell error: %1").arg(aspell_error_message(ret));
+		delete_aspell_can_have_error(ret);
 	}
 }
 
