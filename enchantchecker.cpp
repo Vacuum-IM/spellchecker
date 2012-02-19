@@ -31,12 +31,25 @@
 #include "enchant++.h"
 #include "enchantchecker.h"
 
+QList<QString> dict;
+static void enumerate_dicts (const char * const lang_tag,
+		 const char * const provider_name,
+		 const char * const provider_desc,
+		 const char * const provider_file,
+		 void * user_data)
+{
+	if(!dict.contains(lang_tag))
+		dict+=lang_tag;
+}
+
 EnchantChecker::EnchantChecker() : FSpeller(NULL)
 {
 	if (enchant::Broker *instance = enchant::Broker::instance())
 	{
 		QLocale loc;
-		std::string lang("en_US");
+		lang="en_US";
+		dict.clear();
+		instance->list_dicts(enumerate_dicts);
 		if (instance->dict_exists(loc.name().toStdString()))
 			lang = loc.name().toStdString();
 		try {
@@ -99,4 +112,30 @@ bool EnchantChecker::available() const
 bool EnchantChecker::writable() const
 {
 	return false;
+}
+
+QList< QString > EnchantChecker::dictionaries()
+{
+	return dict;
+}
+
+void EnchantChecker::setLang(QString& AWord)
+{
+if (enchant::Broker *instance = enchant::Broker::instance())
+	{
+		dict.clear();
+		instance->list_dicts(enumerate_dicts);
+		if (instance->dict_exists(AWord.toStdString()))
+			lang = AWord.toStdString();
+		try {
+			FSpeller = enchant::Broker::instance()->request_dict(lang);
+		} catch (enchant::Exception &e) {
+			qWarning() << QString("Enchant error: %1").arg(e.what());
+		}
+	}
+}
+
+QString EnchantChecker::actuallLang()
+{
+    return QString::fromStdString(lang);
 }

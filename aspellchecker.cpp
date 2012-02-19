@@ -38,9 +38,10 @@ ASpellChecker::ASpellChecker()
 	FConfig = NULL;
 	FSpeller = NULL;
 	FConfig = new_aspell_config();
+	lang= QLocale().name().toUtf8().constData();
 	aspell_config_replace(FConfig, "encoding", "utf-8");
+	aspell_config_replace(FConfig, "lang", lang.toUtf8().constData());
 #ifdef Q_WS_WIN
-	aspell_config_replace(FConfig, "lang", QLocale().name().toUtf8().constData());
 	aspell_config_replace(FConfig, "conf-dir", QString("%1/aspell").arg(QCoreApplication::applicationDirPath()).toUtf8().constData());
 	aspell_config_replace(FConfig, "data-dir", QString("%1/aspell/data").arg(QCoreApplication::applicationDirPath()).toUtf8().constData());
 	aspell_config_replace(FConfig, "dict-dir", QString("%1/aspell/dict").arg(QCoreApplication::applicationDirPath()).toUtf8().constData());
@@ -124,4 +125,45 @@ bool ASpellChecker::available() const
 bool ASpellChecker::writable() const
 {
 	return false;
+}
+
+QList< QString > ASpellChecker::dictionaries()
+{
+  AspellDictInfoEnumeration * dels;
+  const AspellDictInfo * entry;
+	QList<QString> dict;
+
+  dels = aspell_dict_info_list_elements(get_aspell_dict_info_list(FConfig));
+
+  while ( (entry = aspell_dict_info_enumeration_next(dels)) != 0) {
+		if(!dict.contains(QString::fromUtf8(entry->code)))
+		 dict += QString::fromUtf8(entry->code);
+	}
+
+  delete_aspell_dict_info_enumeration(dels);
+	
+	return dict;
+}
+
+void ASpellChecker::setLang(QString& AWord)
+{
+	lang=AWord;
+	aspell_config_replace(FConfig, "lang", AWord.toStdString().c_str());
+	AspellCanHaveError* ret = new_aspell_speller(FConfig);
+	if (aspell_error_number(ret) == 0) 
+	{
+		if(FSpeller) 
+			delete_aspell_speller(FSpeller);
+		
+		FSpeller = to_aspell_speller(ret);
+	}
+	else 
+	{
+		qWarning() << QString("Aspell error: %1").arg(aspell_error_message(ret));
+	}
+}
+
+QString ASpellChecker::actuallLang()
+{
+    return lang;
 }

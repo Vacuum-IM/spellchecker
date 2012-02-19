@@ -91,3 +91,18 @@ bool SpellBackend::add(const QString &AWord)
 	Q_UNUSED(AWord);
 	return false;
 }
+
+QList< QString > SpellBackend::dictionaries()
+{
+	return QList<QString>();
+}
+
+void SpellBackend::setLang(QString& AWord)
+{
+	Q_UNUSED(AWord);
+}
+
+QString SpellBackend::actuallLang()
+{
+	return QString();
+}

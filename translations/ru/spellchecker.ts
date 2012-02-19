@@ -11,5 +11,17 @@
         <source>Highlights words that may not be spelled correctly</source>
         <translation>Подсвечивает слова, возможно, набранные неправильно</translation>
     </message>
+    <message>
+        <source>Dictionary</source>
+        <translation>Словарь</translation>
+    </message>
+    <message>
+        <source>Suggestions</source>
+        <translation>Варианты</translation>
+    </message>
+    <message>
+        <source>Add to dictionary</source>
+        <translation>Добавить в словарь</translation>
+    </message>
 </context>
 </TS>

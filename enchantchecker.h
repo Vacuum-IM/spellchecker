@@ -48,8 +48,12 @@ public:
 	virtual bool add(const QString &AWord);
 	virtual bool available() const;
 	virtual bool writable() const;
+	virtual QList<QString> dictionaries();
+	virtual void setLang(QString &AWord);
+	virtual QString actuallLang();
 private:
 	enchant::Dict *FSpeller;
+	std::string lang;
 };
 
 #endif // ENCHANTCHECKER_H

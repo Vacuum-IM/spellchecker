@@ -40,10 +40,19 @@ protected:
 protected slots:
     void onEditWidgetCreated(IEditWidget* AWidget);
     void onSpellDocumentDestroyed(QObject* ADocument);
+		void showContextMenu(const QPoint& pt);
+		void repairWord();
+		void setDict();
+		void addWordToDict();
 private:
     IMessageWidgets *FMessageWidgets;
+		QTextEdit* FTextEdit;
+		int FrepStart;
+		int FrepLenght;
 private:
     QList<SHPair> FHighlighWidgets;
+		QMenu* suggestMenu(QString world);
+		QMenu* dictMenu();
 };
 
 #endif // SPELLCHECKER_H

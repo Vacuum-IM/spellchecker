@@ -5,6 +5,11 @@ LEGEND
   [*] Enhancement
   [-] Bug fix
 
+v0.0.5
+[+] Support for selection of dictionaries
+[+] Selection suggestions for the word with mistake
+[+] Support addition of words in the dictionary
+
 v0.0.4
 [*] Don't check users nicknames
 
