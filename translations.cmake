@@ -1,8 +1,8 @@
 set(LOCALIZED_LANGS
 	"ru"
-#	"pl"
-#	"de"
-#	"uk"
+	"pl"
+	"de"
+	"uk"
 )
 
 macro(set_enabled_langs langs)
