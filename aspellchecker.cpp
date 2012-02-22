@@ -148,7 +148,7 @@ QList< QString > ASpellChecker::dictionaries()
 void ASpellChecker::setLang(QString& AWord)
 {
 	lang=AWord;
-	aspell_config_replace(FConfig, "lang", AWord.toStdString().c_str());
+        aspell_config_replace(FConfig, "lang", AWord.toUtf8());
 	AspellCanHaveError* ret = new_aspell_speller(FConfig);
 	if (aspell_error_number(ret) == 0) 
 	{
