@@ -175,6 +175,7 @@ void SpellChecker::showContextMenu(const QPoint& pt)
         menu->addAction(action);
     }
 
+    menu->setAttribute(Qt::WA_DeleteOnClose,true);
     menu->exec(FTextEdit->mapToGlobal(pt));
 }
 
