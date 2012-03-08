@@ -52,7 +52,7 @@ private:
 private:
     QList<SHPair> FHighlighWidgets;
     QMenu *FDictMenu;
-    QMenu* suggestMenu(QString world);
+    QMenu* suggestMenu(const QString &word);
     QMenu* dictMenu();
 };
 

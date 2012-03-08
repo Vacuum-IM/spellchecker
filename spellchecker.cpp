@@ -20,7 +20,7 @@ void SpellChecker::pluginInfo(IPluginInfo *APluginInfo)
 {
     APluginInfo->name = tr("Spell Checker");
     APluginInfo->description = tr("Highlights words that may not be spelled correctly");
-    APluginInfo->version = "0.0.5";
+    APluginInfo->version = "0.0.6";
     APluginInfo->author = "Minnahmetov V.K.";
     APluginInfo->homePage = "http://code.google.com/p/vacuum-plugins/";
     APluginInfo->dependences.append(MESSAGEWIDGETS_UUID);
@@ -89,18 +89,16 @@ void SpellChecker::onSpellDocumentDestroyed(QObject *ADocument)
     delete getSpellByDocument(ADocument);
 }
 
-QMenu* SpellChecker::suggestMenu(QString world){
-    QList<QString> sgstions = SpellBackend::instance()->suggestions(world);
-    QMenu *menu = new Menu();
-    menu->setTitle(tr("Suggestions"));
+QMenu* SpellChecker::suggestMenu(const QString &word){
+    QList<QString> sgstions = SpellBackend::instance()->suggestions(word);
+    QMenu *menu = new QMenu(tr("Suggestions"));
+    QAction *action;
 
-    for (QList<QString>::iterator i = sgstions.begin(); i != sgstions.end(); i++)
+    for (QList<QString>::iterator sgstion = sgstions.begin(); sgstion != sgstions.end(); sgstion++)
     {
-        QAction *action = new Action();
-        action->setProperty("word", *i);
-        action->setText(*i);
-        QObject::connect(action, SIGNAL(triggered()), this, SLOT(repairWord()));
-        menu->addAction(action);
+        action = menu->addAction(*sgstion, this, SLOT(repairWord()));
+        action->setProperty("word", *sgstion);
+        action->setParent(menu);
     }
 
     return menu;
@@ -108,47 +106,49 @@ QMenu* SpellChecker::suggestMenu(QString world){
 
 QMenu* SpellChecker::dictMenu() {
     QList<QString> dicts = SpellBackend::instance()->dictionaries();
-    QMenu*menu = new Menu();
-    menu->setTitle(tr("Dictionary"));
+    QMenu *menu = new QMenu(tr("Dictionary"));
+    QString actualLang = SpellBackend::instance()->actuallLang();
+    QAction *action;
 
-    for (QList<QString>::iterator i=dicts.begin(); i != dicts.end(); i++)
+    for (QList<QString>::iterator dict = dicts.begin(); dict != dicts.end(); dict++)
     {
-        QAction *action = new Action();
-        action->setProperty("dictionary", *i);
-        action->setText(*i);
+        action = menu->addAction(*dict, this, SLOT(setDict()));
+        action->setProperty("dictionary", *dict);
+        action->setParent(menu);
+        action->setCheckable(true);
 
-        if (*i == SpellBackend::instance()->actuallLang()) {
-            action->setCheckable(true);
+        if (*dict == actualLang) {
             action->setChecked(true);
         }
-
-        QObject::connect(action, SIGNAL(triggered()), this, SLOT(setDict()));
-        menu->addAction(action);
     }
+
     return menu;
 }
 
 void SpellChecker::showContextMenu(const QPoint& pt)
 {
-    FTextEdit=qobject_cast<QTextEdit *>(sender());
-    QMenu* menu=FTextEdit->createStandardContextMenu();
-    QTextCursor cursor= FTextEdit->cursorForPosition(pt);
+    FTextEdit = qobject_cast<QTextEdit *>(sender());
+    QTextCursor cursor = FTextEdit->cursorForPosition(pt);
+    QMenu *menu = FTextEdit->createStandardContextMenu();
+    QMenu *sugMenu = 0;
 
     //get word
     QRegExp expression("\\b\\w+\\b");
-    QString AText=FTextEdit->toPlainText();
+    QString AText = FTextEdit->toPlainText();
 
     int index = AText.indexOf(expression);
     while (index >= 0)
     {
         int length = expression.matchedLength();
-        FrepLenght=-1;
-        if(cursor.position()>=index && cursor.position()<=index+length){
-            AText.remove(index+length, AText.length());
+        FrepLenght = -1;
+
+        if (cursor.position() >= index && cursor.position() <= index + length) {
+            AText.remove(index + length, AText.length());
             AText.remove(0, index);
-            FrepLenght=length;
+            FrepLenght = length;
             break;
         }
+
         index = AText.indexOf(expression, index + length);
     }
 
@@ -156,27 +156,24 @@ void SpellChecker::showContextMenu(const QPoint& pt)
     menu->addSeparator();
     menu->addMenu(FDictMenu);
 
-    if (!AText.isEmpty() && FrepLenght>0 && !SpellBackend::instance()->isCorrect(AText)) {
-        QMenu *sugMenu = suggestMenu(AText);
+    if (!AText.isEmpty() && FrepLenght > 0 && !SpellBackend::instance()->isCorrect(AText)) {
+        sugMenu = suggestMenu(AText);
 
         if (!sugMenu->isEmpty()) {
           menu->addMenu(sugMenu);
-          sugMenu->setAttribute(Qt::WA_DeleteOnClose, true);
-        }
-        else
-        {
-            delete sugMenu;
         }
 
-        QAction *action = new Action();
+        QAction *action = menu->addAction(tr("Add to dictionary"),this,SLOT(addWordToDict()));
         action->setProperty("word", AText);
-        action->setText(tr("Add to dictionary"));
-        QObject::connect(action, SIGNAL(triggered()), this, SLOT(addWordToDict()));
-        menu->addAction(action);
+        action->setParent(menu);
     }
 
-    menu->setAttribute(Qt::WA_DeleteOnClose,true);
     menu->exec(FTextEdit->mapToGlobal(pt));
+
+    if (sugMenu) {
+        delete sugMenu;
+    }
+    delete menu;
 }
 
 void SpellChecker::repairWord()
