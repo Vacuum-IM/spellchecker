@@ -3,6 +3,10 @@
 #include <QMessageBox>
 #include <QApplication>
 
+#include "spellbackend.h"
+
+#include "definitions.h"
+
 #include "spellchecker.h"
 
 SpellChecker::SpellChecker()
@@ -133,7 +137,7 @@ void SpellChecker::showContextMenu(const QPoint& pt)
     QMenu *sugMenu = 0;
 
     //get word
-    QRegExp expression("\\b\\w+\\b");
+    static const QRegExp expression("\\b\\w+\\b");
     QString AText = FTextEdit->toPlainText();
 
     int index = AText.indexOf(expression);

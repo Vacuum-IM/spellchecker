@@ -1,14 +1,11 @@
 #ifndef SPELLCHECKER_H
 #define SPELLCHECKER_H
 
-#include <definitions.h>
-
 #include <interfaces/ipluginmanager.h>
 #include <interfaces/imessagewidgets.h>
 #include <interfaces/imultiuserchat.h>
 
 #include "spellhighlighter.h"
-#include "spellbackend.h"
 
 #define SPELLCHECKER_UUID "{0dc5fbd9-2dd4-4720-9c95-8c3393a577a5}"
 
