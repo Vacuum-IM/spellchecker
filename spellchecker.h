@@ -28,7 +28,7 @@ public:
     virtual QUuid pluginUuid() const { return SPELLCHECKER_UUID; }
     virtual void pluginInfo(IPluginInfo *APluginInfo);
     virtual bool initConnections(IPluginManager *APluginManager, int &AInitOrder);
-    virtual bool initObjects() { return true; }
+    virtual bool initObjects();
     virtual bool initSettings() { return true; }
     virtual bool startPlugin() { return true; }
 protected:

@@ -9,10 +9,9 @@
 
 #include "spellchecker.h"
 
-SpellChecker::SpellChecker()
+SpellChecker::SpellChecker() : FMessageWidgets(NULL)
 {
-    FMessageWidgets = NULL;
-    FDictMenu = dictMenu();
+
 }
 
 SpellChecker::~SpellChecker()
@@ -44,6 +43,13 @@ bool SpellChecker::initConnections(IPluginManager *APluginManager, int &AInitOrd
         }
     }
     return FMessageWidgets!=NULL;
+}
+
+bool SpellChecker::initObjects()
+{
+    FDictMenu = dictMenu();
+
+    return true;
 }
 
 void SpellChecker::appendHL(QTextDocument *ADocument, IMultiUserChat *AMultiUserChat)
@@ -110,7 +116,8 @@ QMenu* SpellChecker::suggestMenu(const QString &word){
 
 QMenu* SpellChecker::dictMenu() {
     QList<QString> dicts = SpellBackend::instance()->dictionaries();
-    QMenu *menu = new QMenu(tr("Dictionary"));
+    QMenu *menu = new QMenu();
+    menu->setTitle(tr("Dictionary"));
     QString actualLang = SpellBackend::instance()->actuallLang();
     QAction *action;
 
