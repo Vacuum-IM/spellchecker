@@ -97,7 +97,7 @@ QList< QString > SpellBackend::dictionaries()
 	return QList<QString>();
 }
 
-void SpellBackend::setLang(QString& AWord)
+void SpellBackend::setLang(const QString &AWord)
 {
 	Q_UNUSED(AWord);
 }

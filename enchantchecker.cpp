@@ -119,9 +119,9 @@ QList< QString > EnchantChecker::dictionaries()
 	return dict;
 }
 
-void EnchantChecker::setLang(QString& AWord)
+void EnchantChecker::setLang(const QString &AWord)
 {
-if (enchant::Broker *instance = enchant::Broker::instance())
+	if (enchant::Broker *instance = enchant::Broker::instance())
 	{
 		dict.clear();
 		instance->list_dicts(enumerate_dicts);
@@ -137,5 +137,5 @@ if (enchant::Broker *instance = enchant::Broker::instance())
 
 QString EnchantChecker::actuallLang()
 {
-    return QString::fromStdString(lang);
+	return QString::fromStdString(lang);
 }

@@ -38,7 +38,7 @@ ASpellChecker::ASpellChecker()
 	FConfig = NULL;
 	FSpeller = NULL;
 	FConfig = new_aspell_config();
-	lang= QLocale().name().toUtf8().constData();
+	lang = QLocale().name().toUtf8().constData();
 	aspell_config_replace(FConfig, "encoding", "utf-8");
 	aspell_config_replace(FConfig, "lang", lang.toUtf8().constData());
 #ifdef Q_WS_WIN
@@ -145,10 +145,10 @@ QList< QString > ASpellChecker::dictionaries()
 	return dict;
 }
 
-void ASpellChecker::setLang(QString& AWord)
+void ASpellChecker::setLang(const QString &AWord)
 {
-	lang=AWord;
-        aspell_config_replace(FConfig, "lang", AWord.toUtf8());
+	lang = AWord;
+	aspell_config_replace(FConfig, "lang", AWord.toUtf8());
 	AspellCanHaveError* ret = new_aspell_speller(FConfig);
 	if (aspell_error_number(ret) == 0) 
 	{
@@ -165,5 +165,5 @@ void ASpellChecker::setLang(QString& AWord)
 
 QString ASpellChecker::actuallLang()
 {
-    return lang;
+	return lang;
 }

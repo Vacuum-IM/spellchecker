@@ -49,7 +49,7 @@ public:
 	virtual bool available() const;
 	virtual bool writable() const;
 	virtual QList<QString> dictionaries();
-	virtual void setLang(QString &AWord);
+	virtual void setLang(const QString &AWord);
 	virtual QString actuallLang();
 private:
 	enchant::Dict *FSpeller;

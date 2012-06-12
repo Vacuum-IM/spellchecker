@@ -6,33 +6,29 @@ SpellHighlighter::SpellHighlighter(QTextDocument *ADocument, IMultiUserChat *AMu
     : QSyntaxHighlighter(ADocument),
       FMultiUserChat(AMultiUserChat)
 {
-
+    FCharFormat.setUnderlineColor(Qt::red);
+    FCharFormat.setUnderlineStyle(QTextCharFormat::SpellCheckUnderline);
 }
 
 void SpellHighlighter::highlightBlock(const QString &AText)
 {
-    QTextCharFormat tcf;
-    tcf.setUnderlineColor(Qt::red);
-    tcf.setUnderlineStyle(QTextCharFormat::SpellCheckUnderline);
+    // Match words (minimally) excluding digits within a word
+    static const QRegExp expression("\\b[^\\s\\d]+\\b");
 
-    // Match words (minimally)
-    QRegExp expression("\\b\\w+\\b");
-
-    QRegExp number("\\b\\d+\\b");
-
-    // Iterate through all words
-    int index = AText.indexOf(expression);
-    while (index >= 0)
+    int index = 0;
+    while ((index = expression.indexIn(AText, index)) != -1)
     {
         int length = expression.matchedLength();
-        if (!expression.cap().contains(number) && !isUserNickName(expression.cap()))
+
+        if (!isUserNickName(expression.cap()))
         {
             if (!SpellBackend::instance()->isCorrect(expression.cap()))
             {
-                setFormat(index, length, tcf);
+                setFormat(index, length, FCharFormat);
             }
         }
-        index = AText.indexOf(expression, index + length);
+
+        index += length;
     }
 }
 

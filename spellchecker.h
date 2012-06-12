@@ -33,24 +33,23 @@ public:
     virtual bool startPlugin() { return true; }
 protected:
     void appendHL(QTextDocument *ADocument, IMultiUserChat *AMultiUserChat);
-    SpellHighlighter* getSpellByDocument(QObject *AEditor);
+    SpellHighlighter *getSpellByDocument(QObject *ADocument, int *index);
+    SpellHighlighter *getSpellByDocumentAndRemove(QObject *ADocument);
 protected slots:
-    void onEditWidgetCreated(IEditWidget* AWidget);
-    void onSpellDocumentDestroyed(QObject* ADocument);
-    void showContextMenu(const QPoint& pt);
+    void onEditWidgetCreated(IEditWidget *AWidget);
+    void onSpellDocumentDestroyed(QObject *ADocument);
+    void showContextMenu(const QPoint &pt);
     void repairWord();
     void setDict();
     void addWordToDict();
 private:
     IMessageWidgets *FMessageWidgets;
-    QTextEdit* FTextEdit;
-    int FrepStart;
-    int FrepLenght;
-private:
+    QTextEdit* FCurrentTextEdit;
     QList<SHPair> FHighlighWidgets;
     QMenu *FDictMenu;
-    QMenu* suggestMenu(const QString &word);
-    QMenu* dictMenu();
+private:
+    QMenu *suggestMenu(const QString &word);
+    QMenu *dictMenu();
 };
 
 #endif // SPELLCHECKER_H
