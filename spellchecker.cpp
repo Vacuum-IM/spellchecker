@@ -166,7 +166,7 @@ void SpellChecker::showContextMenu(const QPoint &pt)
     cursor.select(QTextCursor::WordUnderCursor);
     const QString word = cursor.selectedText();
     QMenu *sugMenu = NULL;
-    Q_ASSERT(sugMenu);
+    Q_ASSERT(!sugMenu);
 
     if (!word.isEmpty() && !SpellBackend::instance()->isCorrect(word)) {
         sugMenu = suggestMenu(word);
