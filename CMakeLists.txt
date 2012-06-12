@@ -41,6 +41,7 @@ add_definitions(
   -DQT_SHARED
   ${ASPELL_DEFINITIONS}
   )
+ 
 
 if (WIN32)
 	include_directories("${CMAKE_INSTALL_PREFIX}/sdk")
@@ -82,6 +83,11 @@ elseif (ASPELL_FOUND)
 	set(HEADERS ${HEADERS} aspellchecker.h)
 	include_directories("${ASPELL_INCLUDE_DIR}")
 	add_definitions(-DHAVE_ASPELL)
+elseif (HUNSPELL_FOUND)
+	set(SOURCES ${SOURCES} hunspellchecker.cpp)
+	set(HEADERS ${HEADERS} hunspellchecker.h)
+	include_directories("${HUNSPELL_INCLUDE_DIR}")
+	add_definitions(-DHAVE_HUNSPELL)
 endif (ENCHANT_FOUND)
 
 #set(UIS notifygmaildialog.ui )
@@ -100,6 +106,8 @@ if (ENCHANT_FOUND)
 	target_link_libraries(${PLUGIN_NAME} ${TARGET_UTILS} ${QT_LIBRARIES} ${ENCHANT_LIBRARIES})
 elseif (ASPELL_FOUND)
 	target_link_libraries(${PLUGIN_NAME} ${TARGET_UTILS} ${QT_LIBRARIES} ${ASPELL_LIBRARIES})
+elseif (HUNSPELL_FOUND)
+	target_link_libraries(${PLUGIN_NAME} ${TARGET_UTILS} ${QT_LIBRARIES} ${HUNSPELL_LIBRARIES})
 endif (ENCHANT_FOUND)
 
 if (WIN32)

@@ -34,6 +34,8 @@
 #	include "enchantchecker.h"
 #elif defined(HAVE_ASPELL)
 #	include "aspellchecker.h"
+#elif defined(HAVE_HUNSPELL)
+#	include "hunspellchecker.h"
 #endif
 
 SpellBackend* SpellBackend::FInstance = NULL;
@@ -48,6 +50,8 @@ SpellBackend* SpellBackend::instance()
 		FInstance = new EnchantChecker();
 #elif defined(HAVE_ASPELL)
 		FInstance = new ASpellChecker();
+#elif defined(HAVE_HUNSPELL)
+		FInstance = new HunspellChecker();
 #else
 		FInstance = new SpellBackend();
 #endif

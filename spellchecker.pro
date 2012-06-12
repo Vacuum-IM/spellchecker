@@ -15,6 +15,7 @@ INCLUDEPATH        += $${VACUUM_SRC_PATH}
 include(enchantchecker.inc)
 include(aspellchecker.inc)
 include(macspellchecker.inc)
+include(hunspellchecker.inc)
 
 #Install
 include(install.inc)
