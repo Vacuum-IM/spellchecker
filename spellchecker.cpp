@@ -205,7 +205,11 @@ void SpellChecker::repairWord()
     cursor.endEditBlock();
 
     SpellHighlighter *spell = getSpellByDocument(FCurrentTextEdit->document());
+#if QT_VERSION >= 0x040600
     spell->rehighlightBlock(cursor.block());
+#else
+    spell->rehighlight();
+#endif
 }
 
 void SpellChecker::setDict()
@@ -240,7 +244,11 @@ void SpellChecker::addWordToDict()
     SpellBackend::instance()->add(word);
 
     SpellHighlighter *spell = getSpellByDocument(FCurrentTextEdit->document());
+#if QT_VERSION >= 0x040600
     spell->rehighlightBlock(cursor.block());
+#else
+    spell->rehighlight();
+#endif
 }
 
 Q_EXPORT_PLUGIN2(plg_spellchecker, SpellChecker)
