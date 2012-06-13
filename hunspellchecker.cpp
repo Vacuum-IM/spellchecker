@@ -15,7 +15,7 @@ HunspellChecker::HunspellChecker()
 #endif
 
 	lang = QLocale().name().toUtf8().constData();
-	setLang(lang);
+	loadHunspell(lang);
 }
 
 HunspellChecker::~HunspellChecker()
@@ -93,6 +93,11 @@ void HunspellChecker::setLang(const QString &ALang)
 	if(FHunSpell)
 		delete FHunSpell;
 	lang = ALang;
+	loadHunspell(lang);
+}
+
+void HunspellChecker::loadHunspell(const QString &ALang)
+{
 	QString dic = QString("%1/%2.dic").arg(dictPath).arg(ALang);
 	if (QFileInfo(dic).exists())
 	{

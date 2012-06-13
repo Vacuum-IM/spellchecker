@@ -23,6 +23,8 @@ public:
 	virtual void setLang(const QString &ALang);
 	virtual QString actuallLang();
 private:
+	void loadHunspell(const QString &ALang);
+
 	Hunspell *FHunSpell;
 	QString dictPath;
 	QTextCodec *codec;
