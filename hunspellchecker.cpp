@@ -8,7 +8,7 @@
 HunspellChecker::HunspellChecker()
 {
 #ifdef Q_WS_WIN
-	dictPath = QString("%1/hunspell/dict").arg(QCoreApplication::applicationDirPath()).toUtf8().constData());
+	dictPath = QString("%1/hunspell/dict").arg(QCoreApplication::applicationDirPath()).toUtf8().constData();
 #else
 	dictPath = "/usr/share/hunspell/";
 #endif
