@@ -3,13 +3,11 @@
 #include <QMessageBox>
 #include <QApplication>
 
-#include <QDebug>
-
 #include "spellbackend.h"
 #include "spellchecker.h"
 #include "definitions.h"
 
-SpellChecker::SpellChecker() : FMessageWidgets(NULL), FCurrentTextEdit(NULL), FDictMenu(NULL)
+SpellChecker::SpellChecker() : FMessageWidgets(NULL), FCurrentTextEdit(NULL), FCurrentCursorPosition(0), FDictMenu(NULL)
 {
 
 }
@@ -162,17 +160,19 @@ void SpellChecker::showContextMenu(const QPoint &pt)
     menu->addSeparator();
     menu->addMenu(FDictMenu);
 
-    QTextCursor cursor = FCurrentTextEdit->cursorForPosition(pt);
-    cursor.select(QTextCursor::WordUnderCursor);
-    const QString word = cursor.selectedText();
     QMenu *sugMenu = NULL;
     Q_ASSERT(!sugMenu);
+
+    QTextCursor cursor = FCurrentTextEdit->cursorForPosition(pt);
+    FCurrentCursorPosition = cursor.position();
+    cursor.select(QTextCursor::WordUnderCursor);
+    const QString word = cursor.selectedText();
 
     if (!word.isEmpty() && !SpellBackend::instance()->isCorrect(word)) {
         sugMenu = suggestMenu(word);
 
         if (!sugMenu->isEmpty()) {
-          menu->addMenu(sugMenu);
+            menu->addMenu(sugMenu);
         }
 
         QAction *action = menu->addAction(tr("Add to dictionary"), this, SLOT(addWordToDict()));
@@ -199,13 +199,14 @@ void SpellChecker::repairWord()
     QTextCursor cursor = FCurrentTextEdit->textCursor();
 
     cursor.beginEditBlock();
+    cursor.setPosition(FCurrentCursorPosition, QTextCursor::MoveAnchor);
     cursor.select(QTextCursor::WordUnderCursor);
     cursor.removeSelectedText();
     cursor.insertText(action->property("word").toString());
     cursor.endEditBlock();
 
     SpellHighlighter *spell = getSpellByDocument(FCurrentTextEdit->document());
-#if QT_VERSION >= 0x040600
+#if QT_VERSION >= 0x040600 // Qt 4.5
     spell->rehighlightBlock(cursor.block());
 #else
     spell->rehighlight();

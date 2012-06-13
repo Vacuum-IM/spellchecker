@@ -45,6 +45,7 @@ protected slots:
 private:
     IMessageWidgets *FMessageWidgets;
     QTextEdit* FCurrentTextEdit;
+    int FCurrentCursorPosition;
     QList<SHPair> FHighlighWidgets;
     QMenu *FDictMenu;
 private:
