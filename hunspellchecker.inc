@@ -1,6 +1,7 @@
 USE_HUNSPELL {
   DEFINES       += HAVE_HUNSPELL
   win32 {
+    DEFINES += HUNSPELL_STATIC
 	INCLUDEPATH += $${HUNSPELL_DEV_PATH}
 	LIBS        += -L$${HUNSPELL_LIB_PATH}
 	LIBS        += -llibhunspell
