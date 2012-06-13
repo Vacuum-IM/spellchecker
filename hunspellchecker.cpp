@@ -1,12 +1,13 @@
 #include <QDir>
 #include <QLocale>
 #include <QCoreApplication>
-#include <QtDebug>
 
 #include "hunspellchecker.h"
 
 HunspellChecker::HunspellChecker()
 {
+	FHunSpell = NULL;
+
 #ifdef Q_WS_WIN
 	dictPath = QString("%1/hunspell/dict").arg(QCoreApplication::applicationDirPath()).toUtf8().constData();
 #else
@@ -14,17 +15,7 @@ HunspellChecker::HunspellChecker()
 #endif
 
 	lang = QLocale().name().toUtf8().constData();
-	QString dic = QString("%1/%2.dic").arg(dictPath).arg(lang);
-	qDebug() << "lang " << lang;
-	qDebug() << "dic " << dic;
-	qDebug() << "dictPath " << dictPath;
-	if (QFileInfo(dic).exists())
-	{
-		FHunSpell = new Hunspell(QString("%1/%2.aff").arg(dictPath).arg(lang).toUtf8().constData(), dic.toUtf8().constData());
-		codec = QTextCodec::codecForName(FHunSpell->get_dic_encoding());
-	}
-	else
-		FHunSpell = 0;
+	setLang(lang);
 }
 
 HunspellChecker::~HunspellChecker()
@@ -97,27 +88,19 @@ QList< QString > HunspellChecker::dictionaries()
 	return dict;
 }
 
-void HunspellChecker::setLang(const QString &AWord)
+void HunspellChecker::setLang(const QString &ALang)
 {
-	lang = AWord;
 	if(FHunSpell)
-	{
 		delete FHunSpell;
-		QString dic = QString("%1/%2.dic").arg(dictPath).arg(lang);
-		if (QFileInfo(dic).exists())
-		{
-			FHunSpell = new Hunspell(QString("%1/%2.aff").arg(dictPath).arg(lang).toUtf8().constData(), dic.toUtf8().constData());
-			codec = QTextCodec::codecForName(FHunSpell->get_dic_encoding());
-		}
+	QString dic = QString("%1/%2.dic").arg(dictPath).arg(ALang);
+	if (QFileInfo(dic).exists())
+	{
+		FHunSpell = new Hunspell(QString("%1/%2.aff").arg(dictPath).arg(ALang).toUtf8().constData(), dic.toUtf8().constData());
+		codec = QTextCodec::codecForName(FHunSpell->get_dic_encoding());
 	}
 }
 
 QString HunspellChecker::actuallLang()
 {
 	return lang;
-}
-
-inline QByteArray HunspellChecker::convert(const QString &word) const
-{
-	return codec ? codec->fromUnicode(word) : word.toUtf8();
 }
