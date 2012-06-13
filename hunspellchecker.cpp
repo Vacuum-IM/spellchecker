@@ -92,6 +92,7 @@ void HunspellChecker::setLang(const QString &ALang)
 {
 	if(FHunSpell)
 		delete FHunSpell;
+	lang = ALang;
 	QString dic = QString("%1/%2.dic").arg(dictPath).arg(ALang);
 	if (QFileInfo(dic).exists())
 	{
