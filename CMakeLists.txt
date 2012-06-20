@@ -2,129 +2,47 @@ cmake_minimum_required(VERSION 2.8)
 
 project(vacuum-spellchecker)
 set(PLUGIN_NAME "spellchecker")
+set(SOURCES spellchecker.cpp spellbackend.cpp spellhighlighter.cpp)
+set(HEADERS spellchecker.h spellbackend.h spellhighlighter.h)
+set(MOC_HEADERS spellchecker.h spellbackend.h spellhighlighter.h)
+set(LOCALIZED_LANGS "ru;pl;de;uk")
 
-set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-
-add_custom_target(updatets)
-
-include("translations.cmake")
-include("install.cmake")
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules)
 
 if (NOT DEFINED SPELLCHECKER_BACKEND)
-  set(SPELLCHECKER_BACKEND "ENCHANT")
+	set(SPELLCHECKER_BACKEND "ENCHANT")
 endif (NOT DEFINED SPELLCHECKER_BACKEND)
 
-find_package(Qt4 REQUIRED)
 find_package(${SPELLCHECKER_BACKEND} REQUIRED)
-
-set(LANGS "" CACHE STRING "List of languages to build localization for (this variable overrides any of LANG_*)")
-set(USED_LANGS "" CACHE INTERNAL "List of languages actually used for generating targets")
-add_lang_options()
-
-if ("${LANGS}" STREQUAL "")
-	process_lang_options()
-else ("${LANGS}" STREQUAL "")
-	set_enabled_langs("${LANGS}")
-endif ("${LANGS}" STREQUAL "")
-
-set(QT_USE_QTXML TRUE)
-#set(QT_USE_QTWEBKIT TRUE)
-
-if (WIN32)
-	set(CMAKE_SHARED_LIBRARY_PREFIX "")
-endif (WIN32)
-
-include(${QT_USE_FILE})
-
-add_definitions(
-  -DQT_PLUGIN 
-  -DQT_SHARED
-  ${ASPELL_DEFINITIONS}
-  )
- 
-
-if (WIN32)
-	include_directories("${CMAKE_INSTALL_PREFIX}/sdk")
-elseif (UNIX)
-	include_directories(
-	  "${CMAKE_INSTALL_PREFIX}/include/vacuum"
-#	  "${ASPELL_INCLUDE_DIR}"
-	  )
-endif (WIN32)
-
-include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
-
-set(SOURCES 
-  spellchecker.cpp
-  spellbackend.cpp
-#  aspellchecker.cpp
-  spellhighlighter.cpp
-  )
-set(HEADERS
-  spellchecker.h
-  spellbackend.h
-#  aspellchecker.h
-  spellhighlighter.h
-)
-set(MOC_HEADERS 
-  spellchecker.h
-  spellbackend.h
-#  aspellchecker.h
-  spellhighlighter.h
-)
 
 if (ENCHANT_FOUND)
 	set(SOURCES ${SOURCES} enchantchecker.cpp)
 	set(HEADERS ${HEADERS} enchantchecker.h)
-	include_directories("${ENCHANT_INCLUDE_DIR}")
+	set(MOC_HEADERS ${MOC_HEADERS} enchantchecker.h)
+	include_directories("${ENCHANT_INCLUDE_DIR} ")
 	add_definitions(-DHAVE_ENCHANT)
 elseif (ASPELL_FOUND)
 	set(SOURCES ${SOURCES} aspellchecker.cpp)
 	set(HEADERS ${HEADERS} aspellchecker.h)
+	set(MOC_HEADERS ${MOC_HEADERS} aspellchecker.h)
 	include_directories("${ASPELL_INCLUDE_DIR}")
 	add_definitions(-DHAVE_ASPELL)
 elseif (HUNSPELL_FOUND)
 	set(SOURCES ${SOURCES} hunspellchecker.cpp)
 	set(HEADERS ${HEADERS} hunspellchecker.h)
+	set(MOC_HEADERS ${MOC_HEADERS} hunspellchecker.h)
 	include_directories("${HUNSPELL_INCLUDE_DIR}")
 	add_definitions(-DHAVE_HUNSPELL)
 endif (ENCHANT_FOUND)
 
-#set(UIS notifygmaildialog.ui )
-
-qt4_wrap_cpp(MOC_SOURCES ${MOC_HEADERS})
-#qt4_wrap_ui(UI_HEADERS ${UIS})
-#qt4_add_resources(RCC_SOURCES ${RCCS})
-
-add_translations(TRANSLATIONS ${PLUGIN_NAME} ${HEADERS} ${SOURCES})
-
-add_library(${PLUGIN_NAME} SHARED ${SOURCES} ${MOC_SOURCES} ${RCC_SOURCES} ${UI_HEADERS} ${TRANSLATIONS} )
-
-find_library(TARGET_UTILS vacuumutils ${CMAKE_INSTALL_PREFIX})
-
 if (ENCHANT_FOUND)
-	target_link_libraries(${PLUGIN_NAME} ${TARGET_UTILS} ${QT_LIBRARIES} ${ENCHANT_LIBRARIES})
+	set(ADD_LIBS ${ENCHANT_LIBRARIES})
 elseif (ASPELL_FOUND)
-	target_link_libraries(${PLUGIN_NAME} ${TARGET_UTILS} ${QT_LIBRARIES} ${ASPELL_LIBRARIES})
+	set(ADD_LIBS ${ASPELL_LIBRARIES})
 elseif (HUNSPELL_FOUND)
-	target_link_libraries(${PLUGIN_NAME} ${TARGET_UTILS} ${QT_LIBRARIES} ${HUNSPELL_LIBRARIES})
+	set(ADD_LIBS ${HUNSPELL_LIBRARIES})
 endif (ENCHANT_FOUND)
 
-if (WIN32)
-	install(TARGETS ${PLUGIN_NAME}
-		RUNTIME DESTINATION "${INSTALL_PLUGINS}"
-		COMPONENT ${PLUGIN_NAME})
-else (WIN32)
-	install(TARGETS ${PLUGIN_NAME}
-		LIBRARY DESTINATION "${INSTALL_PLUGINS}"
-		COMPONENT ${PLUGIN_NAME})
-endif (WIN32)
-
-# uninstall target
-configure_file(
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
-    IMMEDIATE @ONLY)
-
-add_custom_target(uninstall
-    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
+include("${CMAKE_SOURCE_DIR}/cmake/config.cmake")
+include("${CMAKE_SOURCE_DIR}/cmake/translations.cmake")
+include("${CMAKE_SOURCE_DIR}/cmake/plugin.cmake")
