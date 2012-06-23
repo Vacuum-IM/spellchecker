@@ -239,6 +239,7 @@ void SpellChecker::addWordToDict()
     }
 
     QTextCursor cursor = FCurrentTextEdit->textCursor();
+    cursor.setPosition(FCurrentCursorPosition, QTextCursor::MoveAnchor);
     cursor.select(QTextCursor::WordUnderCursor);
     const QString word = cursor.selectedText();
 
