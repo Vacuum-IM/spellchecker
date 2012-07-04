@@ -134,7 +134,7 @@ QMenu* SpellChecker::dictMenu()
     const QList<QString> dicts = SpellBackend::instance()->dictionaries();
     QActionGroup *dictGroup = new QActionGroup(this);
 
-    for (QList<QString>::const_iterator dict = dicts.begin(); dict != dicts.end(); dict++)
+    for (QList<QString>::const_iterator dict = dicts.begin(); dict != dicts.end(); ++dict)
     {
         QAction *action = menu->addAction(*dict, this, SLOT(setDict()));
         action->setProperty("dictionary", *dict);
