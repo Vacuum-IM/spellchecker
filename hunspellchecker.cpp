@@ -26,9 +26,12 @@ HunspellChecker::~HunspellChecker()
 
 bool HunspellChecker::isCorrect(const QString &AWord)
 {
+
 	if(FHunSpell)
 	{
-		return FHunSpell->spell(AWord.toUtf8().constData());
+		QByteArray encodedString;
+		encodedString = codec->fromUnicode(AWord);
+		return FHunSpell->spell(encodedString.data());
 	}
 	return true;
 }
