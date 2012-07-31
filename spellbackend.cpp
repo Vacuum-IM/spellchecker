@@ -28,9 +28,10 @@
 
 #include <QCoreApplication>
 
-#if defined(Q_WS_MAC)
-#	include "macspellchecker.h"
-#elif defined(HAVE_ENCHANT)
+//#if defined(Q_WS_MAC)
+//#	include "macspellchecker.h"
+//#elif defined(HAVE_ENCHANT)
+#if defined(HAVE_ENCHANT)
 #	include "enchantchecker.h"
 #elif defined(HAVE_ASPELL)
 #	include "aspellchecker.h"
@@ -44,9 +45,10 @@ SpellBackend* SpellBackend::instance()
 {
 	if (!FInstance) 
 	{
-#ifdef Q_WS_MAC
-		FInstance = new MacSpellChecker();
-#elif defined(HAVE_ENCHANT)
+//#ifdef Q_WS_MAC
+//		FInstance = new MacSpellChecker();
+//#elif defined(HAVE_ENCHANT)
+#ifdef HAVE_ENCHANT
 		FInstance = new EnchantChecker();
 #elif defined(HAVE_ASPELL)
 		FInstance = new ASpellChecker();

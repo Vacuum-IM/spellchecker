@@ -10,8 +10,10 @@ HunspellChecker::HunspellChecker()
 
 #ifdef Q_WS_WIN
 	dictPath = QString("%1/hunspell").arg(QCoreApplication::applicationDirPath()).toUtf8().constData();
-#else
+#elif defined (Q_WS_X11)
 	dictPath = "/usr/share/hunspell/";
+#elif defined (Q_WS_MAC)
+    dictPath = QString("%1/Library/Spelling").arg(QDir::homePath());
 #endif
 
 	lang = QLocale().name().toUtf8().constData();
