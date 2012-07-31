@@ -9,7 +9,7 @@ HunspellChecker::HunspellChecker()
 	FHunSpell = NULL;
 
 #ifdef Q_WS_WIN
-	dictPath = QString("%1/hunspell/dict").arg(QCoreApplication::applicationDirPath()).toUtf8().constData();
+	dictPath = QString("%1/hunspell").arg(QCoreApplication::applicationDirPath()).toUtf8().constData();
 #else
 	dictPath = "/usr/share/hunspell/";
 #endif
@@ -38,11 +38,13 @@ QList<QString> HunspellChecker::suggestions(const QString &AWord)
 	QList<QString> words;
 	if(FHunSpell)
 	{
-		char **selection;
-		int count = FHunSpell->suggest(&selection, AWord.toUtf8().constData());
+		char **sugglist;
+		QByteArray encodedString;
+		encodedString = codec->fromUnicode(AWord);
+		int count = FHunSpell->suggest(&sugglist, encodedString.data());
 		for(int i = 0; i < count; ++i)
-			words << (codec ? codec->toUnicode(selection[i]) : QString::fromUtf8(selection[i]));
-		FHunSpell->free_list(&selection, count);
+			words << (codec ? codec->toUnicode(sugglist[i]) : QString::fromUtf8(sugglist[i]));
+		FHunSpell->free_list(&sugglist, count);
 		return words;
 	}
 	return words;

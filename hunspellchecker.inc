@@ -1,11 +1,15 @@
 USE_HUNSPELL {
   DEFINES       += HAVE_HUNSPELL
-  win32 {
-    DEFINES += HUNSPELL_STATIC
-	INCLUDEPATH += $${HUNSPELL_DEV_PATH}
-	LIBS        += -L$${HUNSPELL_LIB_PATH}
-	LIBS        += -llibhunspell
-  }
+  DEFINES       += HUNSPELL_STATIC
+  INCLUDEPATH   += ./thirdparty/
+  LIBS          += -lhunspell
   HEADERS       += hunspellchecker.h
   SOURCES       += hunspellchecker.cpp
+
+  debug {
+    LIBS += -L./thirdparty/hunspell/debug
+  } else {
+    LIBS += -L./thirdparty/hunspell/release
+  }
+
 }
