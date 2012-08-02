@@ -31,7 +31,9 @@ bool SpellChecker::initConnections(IPluginManager *APluginManager, int &AInitOrd
 {
     Q_UNUSED(AInitOrder);
 
-    IPlugin *plugin = APluginManager->pluginInterface("IMessageWidgets").value(0);
+	FPluginManager = APluginManager;
+
+	IPlugin *plugin = APluginManager->pluginInterface("IMessageWidgets").value(0);
     if (plugin)
     {
         FMessageWidgets = qobject_cast<IMessageWidgets *>(plugin->instance());
@@ -41,12 +43,15 @@ bool SpellChecker::initConnections(IPluginManager *APluginManager, int &AInitOrd
             connect(FMessageWidgets->instance(),SIGNAL(editWidgetCreated(IEditWidget *)),SLOT(onEditWidgetCreated(IEditWidget *)));
         }
     }
-    return FMessageWidgets != NULL;
+	return FMessageWidgets != NULL;
 }
+
+QString SpellChecker::homePath;
 
 bool SpellChecker::initObjects()
 {
     FDictMenu = dictMenu();
+	homePath = FPluginManager->homePath();
 
     return true;
 }

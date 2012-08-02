@@ -7,6 +7,7 @@
 
 #include <hunspell/hunspell.hxx>
 #include "spellbackend.h"
+#include "spellchecker.h"
 
 class HunspellChecker :
 	public SpellBackend
@@ -29,6 +30,7 @@ private:
 	QString dictPath;
 	QTextCodec *codec;
 	QString lang;
+	QString personalDict;
 };
 
 #endif

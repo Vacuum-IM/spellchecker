@@ -31,6 +31,7 @@ public:
     virtual bool initObjects();
     virtual bool initSettings() { return true; }
     virtual bool startPlugin() { return true; }
+	static QString homePath;
 protected:
     void appendHL(QTextDocument *ADocument, IMultiUserChat *AMultiUserChat);
     SpellHighlighter *getSpellByDocument(QObject *ADocument, int *index);
@@ -43,7 +44,9 @@ protected slots:
     void setDict();
     void addWordToDict();
 private:
+	IPluginManager *FPluginManager;
     IMessageWidgets *FMessageWidgets;
+private:
     QTextEdit* FCurrentTextEdit;
     int FCurrentCursorPosition;
     QList<SHPair> FHighlighWidgets;

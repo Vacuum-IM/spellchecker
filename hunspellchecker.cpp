@@ -1,6 +1,8 @@
 #include <QDir>
 #include <QLocale>
 #include <QCoreApplication>
+#include <QFile>
+#include <QDebug>
 
 #include "hunspellchecker.h"
 
@@ -60,7 +62,14 @@ bool HunspellChecker::add(const QString &AWord)
 	bool result = false;
 	if (FHunSpell)
 	{
-		FHunSpell->add(AWord.toUtf8().constData());
+		QFile file(personalDict);
+		file.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text);
+		file.write(AWord.toUtf8());
+		file.write("\n");
+		file.close();
+		QByteArray encodedString;
+		encodedString = codec->fromUnicode(AWord);
+		FHunSpell->add(encodedString.data());
 		result = true;
 	}
 	return result;
@@ -110,6 +119,18 @@ void HunspellChecker::loadHunspell(const QString &ALang)
 	{
 		FHunSpell = new Hunspell(QString("%1/%2.aff").arg(dictPath).arg(ALang).toUtf8().constData(), dic.toUtf8().constData());
 		codec = QTextCodec::codecForName(FHunSpell->get_dic_encoding());
+
+		personalDict = QString("%1/personal.dictionary.txt").arg(SpellChecker::homePath);
+		QFile file(personalDict);
+		file.open(QIODevice::ReadOnly | QIODevice::Text);
+		QTextStream out(&file);
+		while (!out.atEnd())
+		{
+			QByteArray encodedString;
+			encodedString = codec->fromUnicode(out.readLine());
+			FHunSpell->add(encodedString.constData());
+		}
+		file.close();
 	}
 }
 
