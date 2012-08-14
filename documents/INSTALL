@@ -8,6 +8,7 @@ make install
 You can change spellchecker-backend to aspell(enchant is default), by:
 cmake -DSPELLCHECKER_BACKEND=ASPELL
 
+If you use hunspell backend and Linux set dictionary catalogue with -DHUNSPELL_LIBRARY_PATH="/usr/share/hunspell/"
 
 QMAKE
 =====

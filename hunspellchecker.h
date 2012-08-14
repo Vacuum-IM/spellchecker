@@ -27,7 +27,7 @@ private:
 	void loadHunspell(const QString &ALang);
 
 	Hunspell *FHunSpell;
-	QString dictPath;
+	static const QString dictPath;
 	QTextCodec *codec;
 	QString lang;
 	QString personalDict;

@@ -163,7 +163,6 @@ void SpellChecker::showContextMenu(const QPoint &pt)
     QMenu *menu = FCurrentTextEdit->createStandardContextMenu();
 
     menu->addSeparator();
-    menu->addMenu(FDictMenu);
 
     QMenu *sugMenu = NULL;
     Q_ASSERT(!sugMenu);
@@ -184,6 +183,7 @@ void SpellChecker::showContextMenu(const QPoint &pt)
         action->setParent(menu);
     }
 
+    menu->addMenu(FDictMenu);
     menu->exec(FCurrentTextEdit->mapToGlobal(pt));
 
     if (sugMenu) {

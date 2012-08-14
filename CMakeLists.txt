@@ -33,6 +33,8 @@ elseif (HUNSPELL_FOUND)
 	set(MOC_HEADERS ${MOC_HEADERS} hunspellchecker.h)
 	include_directories("${HUNSPELL_INCLUDE_DIR}")
 	add_definitions(-DHAVE_HUNSPELL)
+	set(HUNSPELL_LIBRARY_PATH "/usr/share/hunspell/" CACHE STRING "")
+	add_definitions(-DHUNSPELL_LIBRARY_PATH="${HUNSPELL_LIBRARY_PATH}")
 endif (ENCHANT_FOUND)
 
 if (ENCHANT_FOUND)
