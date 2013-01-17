@@ -28,9 +28,6 @@
 
 #include <QCoreApplication>
 
-//#if defined(Q_WS_MAC)
-//#	include "macspellchecker.h"
-//#elif defined(HAVE_ENCHANT)
 #if defined(HAVE_ENCHANT)
 #	include "enchantchecker.h"
 #elif defined(HAVE_ASPELL)
@@ -39,16 +36,25 @@
 #	include "hunspellchecker.h"
 #endif
 
-SpellBackend* SpellBackend::FInstance = NULL;
+SpellBackend *SpellBackend::FInstance = NULL;
 
-SpellBackend* SpellBackend::instance() 
+SpellBackend::SpellBackend() : QObject(QCoreApplication::instance())
 {
-	if (!FInstance) 
+
+}
+
+SpellBackend::~SpellBackend()
+{
+
+}
+
+SpellBackend *SpellBackend::instance()
+{
+	if (!FInstance)
 	{
-//#ifdef Q_WS_MAC
-//		FInstance = new MacSpellChecker();
-//#elif defined(HAVE_ENCHANT)
-#ifdef HAVE_ENCHANT
+#if defined(HAVE_MACSPELL)
+		FInstance = new MacSpellChecker();
+#elif defined (HAVE_ENCHANT)
 		FInstance = new EnchantChecker();
 #elif defined(HAVE_ASPELL)
 		FInstance = new ASpellChecker();
@@ -61,13 +67,10 @@ SpellBackend* SpellBackend::instance()
 	return FInstance;
 }
 
-SpellBackend::SpellBackend() : QObject(QCoreApplication::instance())
+void SpellBackend::destroyInstance()
 {
-
-}
-
-SpellBackend::~SpellBackend()
-{
+	delete FInstance;
+	FInstance = NULL;
 }
 
 bool SpellBackend::available() const
@@ -80,16 +83,41 @@ bool SpellBackend::writable() const
 	return false;
 }
 
+QString SpellBackend::actuallLang()
+{
+	return QString::null;
+}
+
+void SpellBackend::setLang(const QString &ALang)
+{
+	Q_UNUSED(ALang);
+}
+
+QList< QString > SpellBackend::dictionaries()
+{
+	return QList<QString>();
+}
+
+void SpellBackend::setCustomDictPath(const QString &APath)
+{
+	Q_UNUSED(APath);
+}
+
+void SpellBackend::setPersonalDictPath(const QString &APath)
+{
+	Q_UNUSED(APath);
+}
+
 bool SpellBackend::isCorrect(const QString &AWord)
 {
 	Q_UNUSED(AWord);
 	return true;
 }
 
-QList<QString> SpellBackend::suggestions(const QString &AWord)
+bool SpellBackend::canAdd(const QString &AWord)
 {
 	Q_UNUSED(AWord);
-	return QList<QString>();
+	return writable();
 }
 
 bool SpellBackend::add(const QString &AWord)
@@ -98,17 +126,8 @@ bool SpellBackend::add(const QString &AWord)
 	return false;
 }
 
-QList< QString > SpellBackend::dictionaries()
-{
-	return QList<QString>();
-}
-
-void SpellBackend::setLang(const QString &AWord)
+QList<QString> SpellBackend::suggestions(const QString &AWord)
 {
 	Q_UNUSED(AWord);
-}
-
-QString SpellBackend::actuallLang()
-{
-	return QString();
+	return QList<QString>();
 }

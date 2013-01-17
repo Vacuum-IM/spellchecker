@@ -12,10 +12,13 @@ DEPENDPATH         += $${VACUUM_SRC_PATH}
 INCLUDEPATH        += $${VACUUM_SRC_PATH}
 
 #Include Backends
-include(enchantchecker.inc)
-include(aspellchecker.inc)
-#include(macspellchecker.inc)
-include(hunspellchecker.inc)
+USE_ENCHANT {
+  include(enchantchecker.inc)
+} else:USE_ASPELL {
+  include(aspellchecker.inc)
+} else {
+  include(hunspellchecker.inc)
+}
 
 #Install
 include(install.inc)

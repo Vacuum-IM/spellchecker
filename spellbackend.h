@@ -31,19 +31,25 @@
 #include <QString>
 #include <QObject>
 
-class SpellBackend : 
+#define PERSONAL_DICT_FILENAME  "personal.dic"
+
+class SpellBackend :
 	public QObject
 {
 public:
 	static SpellBackend* instance();
-	virtual QList<QString> suggestions(const QString &AWord);
-	virtual bool isCorrect(const QString &AWord);
-	virtual bool add(const QString &AWord);
+	static void destroyInstance();
 	virtual bool available() const;
 	virtual bool writable() const;
-	virtual QList<QString> dictionaries();
-	virtual void setLang(const QString &AWord);
 	virtual QString actuallLang();
+	virtual void setLang(const QString &ALang);
+	virtual QList<QString> dictionaries();
+	virtual void setCustomDictPath(const QString &APath);
+	virtual void setPersonalDictPath(const QString &APath);
+	virtual bool isCorrect(const QString &AWord);
+	virtual bool canAdd(const QString &AWord);
+	virtual bool add(const QString &AWord);
+	virtual QList<QString> suggestions(const QString &AWord);
 protected:
 	SpellBackend();
 	virtual ~SpellBackend();

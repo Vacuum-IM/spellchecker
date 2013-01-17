@@ -12,16 +12,16 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Suggestions</source>
-        <translation>Sugestie</translation>
-    </message>
-    <message>
         <source>Dictionary</source>
         <translation>Słownik</translation>
     </message>
     <message>
-        <source>Add to dictionary</source>
-        <translation>Dodaj do słownika</translation>
+        <source>Spell Check</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add &apos;%1&apos; to Dictionary</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

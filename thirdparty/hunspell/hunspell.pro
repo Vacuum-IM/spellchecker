@@ -3,15 +3,10 @@ TEMPLATE = lib
 CONFIG  -= qt
 CONFIG  += staticlib warn_off
 DEFINES += HUNSPELL_STATIC
-
-debug {
-DESTDIR = debug 
-} else {
-DESTDIR = release
-}
+DESTDIR  = .
 
 SOURCES += \
-    affentry.cxx \
+	affentry.cxx \
 	affixmgr.cxx \
 	csutil.cxx \
 	dictmgr.cxx \
@@ -24,7 +19,7 @@ SOURCES += \
 	suggestmgr.cxx
 
 HEADERS += \  
-    affentry.hxx \
+	affentry.hxx \
 	affixmgr.hxx \
 	atypes.hxx \
 	baseaffix.hxx \

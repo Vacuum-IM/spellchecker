@@ -23,119 +23,151 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
+#include "enchantchecker.h"
 
 #include <QDir>
 #include <QCoreApplication>
-#include <QtDebug>
 
-#include "enchant++.h"
-#include "enchantchecker.h"
-
-QList<QString> dict;
+QList<QString> dicts;
 static void enumerate_dicts (const char * const lang_tag,
-		 const char * const provider_name,
-		 const char * const provider_desc,
-		 const char * const provider_file,
-		 void * user_data)
+							 const char * const provider_name,
+							 const char * const provider_desc,
+							 const char * const provider_file,
+							 void * user_data)
 {
-	if(!dict.contains(lang_tag))
-		dict+=lang_tag;
+	Q_UNUSED(provider_name); Q_UNUSED(provider_desc); Q_UNUSED(provider_file); Q_UNUSED(user_data);
+	if(!dicts.contains(lang_tag))
+		dicts+=lang_tag;
 }
 
-EnchantChecker::EnchantChecker() : FSpeller(NULL)
+EnchantChecker::EnchantChecker()
 {
-	if (enchant::Broker *instance = enchant::Broker::instance())
-	{
-		QLocale loc;
-		lang="en_US";
-		dict.clear();
-		instance->list_dicts(enumerate_dicts);
-		if (instance->dict_exists(loc.name().toStdString()))
-			lang = loc.name().toStdString();
-		try {
-			FSpeller = enchant::Broker::instance()->request_dict(lang);
-		} catch (enchant::Exception &e) {
-			qWarning() << QString("Enchant error: %1").arg(e.what());
-		}
-	}
+	FDict = NULL;
+	FBroker = enchant_broker_init();
 }
 
 EnchantChecker::~EnchantChecker()
 {
-	delete FSpeller;
-	FSpeller = NULL;
+	if (FDict)
+		enchant_broker_free_dict(FBroker,FDict);
+	enchant_broker_free(FBroker);
+}
+
+bool EnchantChecker::available() const
+{
+	return FDict != NULL;
+}
+
+bool EnchantChecker::writable() const
+{
+	return true;
+}
+
+QString EnchantChecker::actuallLang()
+{
+	return FActualLang;
+}
+
+void EnchantChecker::setLang(const QString &ALang)
+{
+	if (FActualLang != ALang)
+	{
+		FActualLang = ALang;
+		if (FDict)
+			enchant_broker_free_dict(FBroker,FDict);
+		FDict = enchant_broker_request_dict(FBroker,ALang.toUtf8().constData());
+		loadPersonalDict();
+	}
+}
+
+QList< QString > EnchantChecker::dictionaries()
+{
+	dicts.clear();
+	enchant_broker_list_dicts(FBroker,enumerate_dicts,NULL);
+	return dicts;
+}
+
+void EnchantChecker::setCustomDictPath(const QString &APath)
+{
+	Q_UNUSED(APath);
+}
+
+void EnchantChecker::setPersonalDictPath(const QString &APath)
+{
+	FPersonalDictPath = APath;
 }
 
 bool EnchantChecker::isCorrect(const QString &AWord)
 {
-	if(FSpeller) 
-	{
-		return FSpeller->check(AWord.toUtf8().constData());
-	}
+	if(available())
+		return enchant_dict_check(FDict,AWord.toUtf8().constData(),AWord.toUtf8().length())<=0;
 	return true;
+}
+
+bool EnchantChecker::canAdd(const QString &AWord)
+{
+	return writable() && !AWord.trimmed().isEmpty();
+}
+
+bool EnchantChecker::add(const QString &AWord)
+{
+	if (available() && canAdd(AWord))
+	{
+		QString trimmed_word = AWord.trimmed();
+		enchant_dict_add_to_personal(FDict,trimmed_word.toUtf8().constData(),trimmed_word.toUtf8().length());
+		savePersonalDict(trimmed_word);
+		return true;
+	}
+	return false;
 }
 
 QList<QString> EnchantChecker::suggestions(const QString &AWord)
 {
 	QList<QString> words;
-	if (FSpeller) 
+	if (available())
 	{
-		std::vector<std::string> out_suggestions;
-		FSpeller->suggest(AWord.toUtf8().constData(), out_suggestions);
-		std::vector<std::string>::iterator aE = out_suggestions.end();
-		for (std::vector<std::string>::iterator aI = out_suggestions.begin(); aI != aE; ++aI)
-			words += QString::fromUtf8(aI->c_str());
+		size_t suggestsCount = 0;
+		char **suggests = enchant_dict_suggest(FDict,AWord.toUtf8().constData(),AWord.toUtf8().length(),&suggestsCount);
+		if (suggests && suggestsCount>0)
+		{
+			for (size_t i=0; i<suggestsCount; i++)
+				words.append(QString::fromUtf8(suggests[i]));
+			enchant_dict_free_string_list(FDict,suggests);
+		}
 	}
 	return words;
 }
 
-bool EnchantChecker::add(const QString &AWord)
+void EnchantChecker::loadPersonalDict()
 {
-	bool result = false;
-	if (FSpeller) 
+	if (available() && !FPersonalDictPath.isEmpty())
 	{
-		QString trimmed_word = AWord.trimmed();
-		if(!trimmed_word.isEmpty()) 
+		QDir dictDir(FPersonalDictPath);
+		QFile file(dictDir.absoluteFilePath(PERSONAL_DICT_FILENAME));
+		if (file.open(QIODevice::ReadOnly | QIODevice::Text))
 		{
-			FSpeller->add_to_pwl(trimmed_word.toUtf8().constData());
-			result = true;
+			while (!file.atEnd())
+			{
+				QString word = QString::fromUtf8(file.readLine()).trimmed();
+				if (canAdd(word))
+					enchant_dict_add_to_personal(FDict,word.toUtf8().constData(),word.toUtf8().length());
+			}
+			file.close();
 		}
 	}
-	return result;
 }
 
-bool EnchantChecker::available() const
+void EnchantChecker::savePersonalDict(const QString &AWord)
 {
-	return (FSpeller != NULL);
-}
-
-bool EnchantChecker::writable() const
-{
-	return false;
-}
-
-QList< QString > EnchantChecker::dictionaries()
-{
-	return dict;
-}
-
-void EnchantChecker::setLang(const QString &AWord)
-{
-	if (enchant::Broker *instance = enchant::Broker::instance())
+	if (!FPersonalDictPath.isEmpty() && !AWord.isEmpty())
 	{
-		dict.clear();
-		instance->list_dicts(enumerate_dicts);
-		if (instance->dict_exists(AWord.toStdString()))
-			lang = AWord.toStdString();
-		try {
-			FSpeller = enchant::Broker::instance()->request_dict(lang);
-		} catch (enchant::Exception &e) {
-			qWarning() << QString("Enchant error: %1").arg(e.what());
+		QDir dictDir(FPersonalDictPath);
+		QFile file(dictDir.absoluteFilePath(PERSONAL_DICT_FILENAME));
+		if (file.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text))
+		{
+			file.write(AWord.toUtf8());
+			file.write("\n");
+			file.close();
 		}
 	}
-}
-
-QString EnchantChecker::actuallLang()
-{
-	return QString::fromStdString(lang);
 }
