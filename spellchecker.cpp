@@ -3,7 +3,6 @@
 #include <QMessageBox>
 #include <QApplication>
 #include <QActionGroup>
-#include <QDebug>
 
 #include "spellbackend.h"
 #include "spellchecker.h"
