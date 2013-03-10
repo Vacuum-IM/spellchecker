@@ -3,7 +3,7 @@
 #ifdef USE_SYSTEM_HUNSPELL
 #	include <hunspell/hunspell.hxx>
 #else
-#	include <thirdparty/hunspell/hunspell.hxx>
+#	include "thirdparty/hunspell/hunspell.hxx"
 #endif
 
 #include <QDir>
