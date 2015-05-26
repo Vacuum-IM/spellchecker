@@ -26,6 +26,7 @@
  */
 
 #include <QDir>
+#include <QtDebug>
 #include <QLocale>
 #include <QCoreApplication>
 
